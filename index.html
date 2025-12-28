@@ -1,0 +1,460 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>REAL OR FAKE? | The Illusion Test </title>
+    <link rel="stylesheet" href="style.css">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Crimson+Text:ital,wght@0,400;0,600;1,400&family=Special+Elite&family=DM+Mono:ital,wght@0,300;0,400;0,500;1,300&display=swap" rel="stylesheet">
+    <style>
+        #main-content {
+            opacity: 1 !important;
+            visibility: visible !important;
+            display: block !important;
+        }
+        
+        .hidden {
+            display: none !important;
+        }
+    </style>
+</head>
+<body>
+    <!-- 素描风格的加载页面 -->
+    <div id="loading-screen" class="loading-screen">
+        <!-- 加载页背景图 -->
+        <div class="loading-bg" style="
+          position: absolute;
+          top: 0; left: 0;
+          width: 100%; height: 100%;
+          background: url('images/bg1.jpg') center/cover no-repeat;
+          opacity: 0.2;
+          filter: contrast(0.8) brightness(0.7);
+          z-index: 0;
+        "></div>
+        <div class="sketch-container">
+            <div class="sketch-grid">
+                <div class="grid-line vertical"></div>
+                <div class="grid-line horizontal"></div>
+                <div class="grid-line diagonal"></div>
+            </div>
+            <div class="sketch-title">
+              <h1 class="sketch-text">
+                <span class="shake-word">REAL</span> 
+                <span class="amp">or</span> 
+                <span class="shake-word">FAKE</span>
+              </h1>
+              <div class="sketch-subtitle"> The Illusion Test </div>
+            </div>
+            <div class="signature-container">
+                <!-- 签名PNG图片：渐现效果 -->
+                <img src="images/signature.png" alt="signature" class="signature-img">
+                <div class="signature-caption"> ⇧ Click the signature to explore ... </div>
+            </div>
+            <div class="loading-note">
+                <div class="note-line">Loading experimental framework...</div>
+                <div class="note-line">Preparing perceptual challenges...</div>
+                <div class="note-line">Initializing doubt...</div>
+            </div>
+        </div>
+    </div>
+
+    <!-- 主内容区 -->
+    <main id="main-content">
+        <!-- 实验性导航 -->
+        <!-- ========== 全局导航栏 ========== -->
+        <nav class="global-nav">
+          <div class="section-container">
+            <div class="nav-logo">
+              <span>REAL OR FAKE?</span>
+            </div>
+            <ul class="nav-links">
+              <li><a href="#hero" class="nav-link">HOME</a></li>
+              <li><a href="#intro" class="nav-link">INTRODUCTION</a></li>
+              <li><a href="#game" class="nav-link">GAME</a></li>
+              <li><a href="#exploration" class="nav-link">EXPLORATION</a></li>
+            </ul>
+          </div>
+        </nav>
+        <!-- 首页 - 幻影人物部分 -->
+        <section id="hero" class="hero-section">
+            <!-- 背景幻影图 -->
+            <div class="hero-bg" style="
+              position: absolute;
+              top: 0; left: 0;
+              width: 100%; height: 100%;
+              background: url('images/bg1.jpg') center/cover no-repeat;
+              opacity: 0.3;
+              filter: contrast(0.85) brightness(0.75);
+              z-index: 0;
+            "></div>        
+            <div class="hero-question">
+                <div class="question-mark">?</div>
+                <div class="question-text">
+                    <div class="typewriter">
+                        <span class="type-line">The Illusion Test</span>
+                        <span class="type-line">A Perceptual Experiment in Post-Photographic Reality</span>
+                        <span class="type-line">「 When eyes are digital and reality is optional, can vision be trusted ? 」</span>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="scroll-hint">
+                <div class="hint-line"></div>
+                <div class="hint-text"> SCROLL TO BEGIN </div>
+            </div>
+        </section>
+      <!-- 打字机段落 + INTRODUCTION 合并部分 -->
+<section id="typewriter" class="typewriter-section">
+<section id="intro" class="intro-section"></section>
+  <div class="typewriter-container">
+    <!-- 文字内容（带 data-scroll 触发动画） -->
+    <div class="intro-text">
+        <!-- 背景音乐 -->
+<audio id="bg-music" src="sounds/vinyl crackles loop.wav" preload="auto" loop></audio>
+
+<!-- 提示文字 -->
+<div class="music-hint">
+ Click to pause music ⬆︎
+</div>
+      <h2 class="experiment-title">
+        <span class="title-number">01</span>
+        <span class="title-text">INTRODUCTION</span>
+      </h2>
+      <div class="experiment-description">
+        <p class="desc-line" data-scroll>In recent years, AI tools such as Midjourney, Runway, and emerging Chinese generative platforms including 豆包 (Doubao) and 即梦 (Jimeng)… have begun to blur the boundaries of photographic image-making.</p>
+        <p class="desc-line" data-scroll>Photography, once closely tied to cameras, light, and the physical world, can now exist without any direct contact with reality.</p>
+        <p class="desc-line" data-scroll>Images may appear photographic, yet be produced entirely by algorithms, without a scene, a subject, or a moment ever having existed.</p>
+        <p class="desc-line" data-scroll>This shift unsettles photography’s long-standing relationship with “the real”.</p>
+        <p class="desc-line" data-scroll>As Rosalind Krauss (1977) famously argued, photography has historically derived its authority from its indexical link to the world.</p>
+        <p class="desc-line" data-scroll>When that link is disrupted, what does a photographic image ask us to believe?</p>
+        <p class="desc-line" data-scroll>And when images are created through a mixture of human prompts, training data, and automated systems, who—or what—can be said to be the author?</p>
+        <p class="desc-line" data-scroll>Real or Fake? explores these questions through an interactive digital experience.</p>
+        <p class="desc-line" data-scroll>By asking viewers to make—and doubt—their own judgements, Real or Fake? examines how ideas of authenticity, authorship, and visual trust are being reshaped in an age of human–machine collaboration.</p>
+      </div>
+
+      <!-- 工具图标 -->
+<div class="tool-icons">
+  <!-- 第一行：4 个图标 -->
+  <a href="https://www.midjourney.com/" target="_blank" class="tool-icon"><img src="assets/icons/Midjourneylogo.png" alt="Midjourney"><div>Midjourney</div></a>
+  <a href="https://runwayml.com/" target="_blank" class="tool-icon"><img src="assets/icons/runwaylogo.jpeg" alt="Runway"><div>Runway</div></a>
+  <a href="https://www.doubao.com/chat/" target="_blank" class="tool-icon"><img src="assets/icons/豆包logo.png" alt="豆包"><div>豆包 (Doubao)</div></a>
+  <a href="https://jimeng.jianying.com/ai-tool/home/" target="_blank" class="tool-icon"><img src="assets/icons/即梦logo.png" alt="即梦"><div>即梦 (Jimeng)</div></a>
+
+  <!-- 第二行：5 个图标 -->
+  <a href="https://klingai.com/cn/" target="_blank" class="tool-icon"><img src="assets/icons/可灵logo.png" alt="可灵"><div>可灵 (Kling)</div></a>
+  <a href="https://chatglm.cn/main/alltoolsdetail?lang=zh" target="_blank" class="tool-icon"><img src="assets/icons/智谱清言logo.png" alt="智谱清言"><div>智谱清言</div></a>
+  <a href="https://chatgpt.com/" target="_blank" class="tool-icon"><img src="assets/icons/ChatGPTlogo.png" alt="ChatGPT"><div>ChatGPT</div></a>
+  <a href="https://www.canva.com/zh_cn/" target="_blank" class="tool-icon"><img src="assets/icons/Canvaslogo.jpeg" alt="Canva"><div>Canva</div></a>
+  <!-- <a href="https://pika.art/" target="_blank" class="tool-icon"><img src="assets/icons/Pikalogo.jpeg" alt="Pika"><div>Pika</div></a> -->
+</div>
+<!-- 新增：点击提示文字 -->
+<div class="tool-icons-hint">
+  Click the icon to the website ⬆︎
+</div>
+    </div>
+<!-- 唱片 + 音符 + 提示文字 容器 -->
+<div class="album-wrapper">
+  <img src="assets/icons/album.png" alt="Album Record" class="album-record">
+  <img src="assets/icons/note2.png" alt="Note" id="album-note" class="album-note">
+  <!-- 👇 新增提示文字 -->
+  <!-- <div class="music-hint">
+    ⇧ Click to pause music -->
+  </div>
+</div>
+</section>
+<!-- 游戏开始过渡界面 -->
+<section id="game-intro" class="game-intro-section">
+    <div class="game-intro-bg">
+        <img src="images/bg2.png" class="bg-layer bg2" alt="Background layer 2">
+        <img src="images/bg3.jpg" class="bg-layer bg3" alt="Background layer 3">
+    </div>
+    
+    <div class="game-intro-text">
+        <p class="intro-line first-line">Before the game, ask yourself:</p>
+        <p class="intro-line second-line"></p>
+    </div>
+    
+    <div class="start-button-container">
+        <img src="assets/icons/little hedgehog4.png" alt="Start Game" class="start-button">
+        <p class="start-text">Click to Start The Game ⬆︎</p>
+    </div>
+    
+    <!-- 打字机音效 -->
+    <audio id="typing-sound" src="sounds/Old Keyboard Typing 4.wav" preload="auto"></audio>
+    <audio id="laser-sound" src="sounds/laser.wav" preload="auto"></audio>
+    <!-- 在index.html中添加音效资源（可放在现有audio标签附近） -->
+<audio id="click-sound" src="sounds/Click1.wav" preload="auto"></audio>
+<!-- 在index.html的音频区域添加 -->
+<audio id="reveal-music" src="sounds/Isobel Waller-Bridge,RSVP Voices - Kyrie (feat. RSVP Voices).mp3" preload="auto"></audio>
+</section>
+        <!-- 游戏测试部分 -->
+        <section id="game" class="game-section">
+            <div class="section-container">
+                <div class="test-protocol">
+                    <div class="protocol-header">
+                        <h3 class="protocol-title">VISUAL AUTHENTICITY TEST</h3>
+                        <div class="protocol-info">
+                            <div class="info-item">
+                                <span class="info-label">ROUND</span>
+                                <span class="info-value" id="current-round">01</span>
+                            </div>
+                            <div class="info-item">
+                                <span class="info-label">TOTAL</span>
+                                <span class="info-value">05</span>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="test-interface">
+                        <!-- 初始状态 -->
+                        <div class="test-intro" id="test-intro">
+                            <div class="intro-prompt">
+                                <div class="prompt-text">ROUND <span id="round-number">01</span> / 05</div>
+                                <div class="prompt-sub">Click on the image you believe is AI-generated</div>
+                            </div>
+                        </div>
+                        
+                        <!-- 图片对比 -->
+                        <div class="comparison-view" id="comparison-view">
+                            <div class="comparison-frame">
+                                <div class="image-slot slot-a" data-slot="A">
+                                    <div class="slot-label">IMAGE A</div>
+                                    <div class="image-container">
+                                        <img src="images/fake1.png" alt="Test Image A" class="test-image">
+                                        <div class="image-overlay">
+                                            <div class="overlay-text">SELECT AS FAKE</div>
+                                        </div>
+                                    </div>
+                                </div>
+                                
+                                <div class="comparison-divider">
+                                    <div class="divider-line"></div>
+                                    <div class="divider-text">OR</div>
+                                    <div class="divider-line"></div>
+                                </div>
+                                
+                                <div class="image-slot slot-b" data-slot="B">
+                                    <div class="slot-label">IMAGE B</div>
+                                    <div class="image-container">
+                                        <img src="images/fake2.png" alt="Test Image B" class="test-image">
+                                        <div class="image-overlay">
+                                            <div class="overlay-text">SELECT AS FAKE</div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- 最终确认界面 -->
+        <div class="final-confirmation hidden" id="final-confirmation">
+            <div class="final-confirm-content">
+                <div class="final-question">
+                    <div class="final-question-mark">?</div>
+                    <div class="final-question-text">Final Decision</div>
+                    <div class="final-question-sub">You've made all 5 selections. Are you sure about your choices?</div>
+                </div>
+                <div class="final-confirm-options">
+                    <button class="final-confirm-btn" id="final-confirm-btn">
+                        <span>I'M SURE, SHOW THE RESULT</span>
+                        <div class="confirm-line"></div>
+                    </button>
+                    <button class="final-review-btn" id="final-review-btn">
+                        <span>I'M HESITATING, DO IT AGAIN</span>
+                    </button>
+                </div>
+            </div>
+        </div>
+
+        <!-- 雪花屏揭示部分 -->
+        <section id="reveal" class="reveal-section hidden">
+            <!-- 在reveal-section中添加雪花屏容器 -->
+<div class="tv-snow">
+  <div class="noise"></div>
+  <div class="scanlines"></div>
+  <div class="purple-lines"></div>
+  <div class="no-signal">NO SIGNAL</div>
+<!-- 扫描线容器 -->
+<div class="scanline-container">
+  <!-- 扫描线元素 -->
+  <div class="scanline"></div>
+            <div class="snowfall-container">
+                <!-- 雪花动画 -->
+                <div class="snowflakes"></div>
+                
+                <div class="reveal-content">
+                    <div class="wrong-title" id="wrong-title">
+                        YOU WERE <br> WRONG 
+                    </div>
+                    
+                    <div class="reveal-message">
+                        <p>Every single image in this test was generated by AI.</p>
+                        <p>There were no "real" photographs—only convincing simulations.</p>
+                        <p>The game wasn't about identifying AI images.</p>
+                        <p>It was about revealing how easily we trust what we see.</p>
+                    </div>
+                    
+                    <button class="deception-btn" id="show-deception-btn">
+                        <span>SEE HOW YOU WERE DECEIVED</span>
+                        <div class="btn-sketch"></div>
+                    </button>
+                </div>
+            </div>
+        </section>
+
+        <!-- 分析解密 -->
+        <section id="analysis" class="analysis-section hidden">
+            <div class="section-container">
+                <div class="analysis-header">
+                    <h2 class="analysis-title">THE ART OF DECEPTION</h2>
+                    <div class="analysis-subtitle"> ⬅︎ ⬅︎ ⬅︎ CLICK THE NOTE TO EXPLORE MORE ⬅︎ SWIPE LEFT OR RIGHT TO VIEW MORE </div>
+                </div>
+                
+                <div class="analysis-grid"></div>
+                
+                <div class="analysis-footnote">
+                    <div class="footnote-symbol">*</div>
+                    <div class="footnote-text">
+                        These flaws represent current limitations. With each iteration, AI-generated imagery becomes more convincing, 
+                        challenging the very concept of photographic authenticity.
+                    </div>
+                </div>
+            </div>
+            <!-- 新增的音符图片 -->
+        <div class="analysis-note">
+            <img src="assets/icons/note1.png" alt="Music Note" class="note-img">
+        </div>
+        <!-- 修改index.html中音符相关部分 -->
+<div class="analysis-note-container">
+  <!-- <div class="analysis-note">
+    <img src="assets/icons/note1.png" alt="Music Note" class="note-img">
+  </div> -->
+  <!-- <div class="analysis-note-text">Click to view additional analysis</div> -->
+</div>
+            <!-- 新增刺猬图片 -->
+    <div class="analysis-hedgehog">
+        <img src="assets/icons/little hedgehog6.png" alt="Little Hedgehog" class="hedgehog-img">
+    </div>
+    <!-- 在 analysis 部分添加新的分析页面 -->
+<div class="detailed-analysis hidden" id="detailed-analysis">
+    <div class="section-container">
+        <div class="analysis-header">
+            <h2 class="analysis-title">DETAILED ANALYSIS</h2>
+            <div class="analysis-subtitle"> ⬅︎ ⬅︎ ⬅︎ CLICK THE NOTE TO EXPLORE MORE ⬅︎ SWIPE LEFT OR RIGHT TO VIEW MORE </div>
+        </div>
+        
+        <div class="analysis-grid">
+            <!-- 这里将通过 JavaScript 动态填充 fake2、fake3、fake6、fake7、fake10 的分析内容 -->
+        </div>
+        
+        <!-- <button class="back-to-analysis" id="back-to-analysis">
+            <span>BACK TO MAIN ANALYSIS</span>
+        </button> -->
+    </div>
+</div>
+        </section>
+
+        
+    </main>
+<!-- 快门音效 -->
+<audio id="shutter-sound" src="sounds/Camera4.wav" preload="auto"></audio>
+    <script src="script.js"></script>
+</body>
+</html>
+<!-- 探索部分 -->
+<section id="exploration" class="exploration-section">
+    <div class="section-container">
+        <div class="exploration-header">
+            <h2 class="exploration-title">EXPLORATION</h2>
+            <div class="exploration-subtitle"> Let's explore more ... to be continued </div>
+        </div>
+        
+        <div class="exploration-grid">
+            <!-- 视频 1 -->
+            <a href="https://www.youtube.com/watch?v=mjl4NEMG0JE&t=1s" target="_blank" class="video-card" rel="noopener noreferrer">
+                <div class="video-thumbnail">
+                    <img src="images/Can We Detect Neural Image Generators.png" alt="Can We Detect Neural Image Generators?" class="video-image">
+                    <div class="play-icon">▶</div>
+                </div>
+                <h3 class="video-title">Can We Detect Neural Image Generators? (Can We Detect Neural Image Generators? 2020)</h3>
+            </a>
+            
+            <!-- 视频 2 -->
+            <a href="https://www.youtube.com/watch?v=bhXNoRqCbAs" target="_blank" class="video-card" rel="noopener noreferrer">
+                <div class="video-thumbnail">
+                    <img src="images/Yes, AI might take your photography jobs.png" alt="AI vs Human Photography" class="video-image">
+                    <div class="play-icon">▶</div>
+                </div>
+                <h3 class="video-title">Yes, AI might take your photography jobs (Yes, AI might take your photography jobs 2024)</h3>
+            </a>
+            
+            <!-- 视频 3 -->
+            <a href="https://www.youtube.com/watch?v=rgMOoVDl2Qs&t=84s" target="_blank" class="video-card" rel="noopener noreferrer">
+                <div class="video-thumbnail">
+                    <img src="images/The future of AI in photography what you need to know.png" alt="Future of AI in Photography" class="video-image">
+                    <div class="play-icon">▶</div>
+                </div>
+                <h3 class="video-title">The future of AI in photography: what you need to know (The future of AI in photography: what you need to know 2025)</h3>
+            </a>
+        </div>
+    </div>
+</section>
+<!-- 参考文献和声明 -->
+        <footer class="experiment-footer">
+            <div class="section-container">
+                <div class="footer-content">
+                    <div class="reference-section">
+                        <h4 class="footer-title">REFERENCES</h4>
+                        <div class="reference-list">
+                            <div class="reference-item">All images are generated by Doubao(豆包) and Jimeng(即梦).</div>
+                            <div class="reference-item">E-Journal Article:
+Krauss, R. (1977) Notes on the Index: Seventies Art in America, October ,3, pp. 68–81. Available: https://doi.org/10.2307/778437 [Accessed: 10 October 2025].
+.</div>
+                            <div class="reference-item">Icons：
+The icon of album (AouadiZiyad, Pinterest)
+The icon of little hedgehog (charpentiercharlie,Pinterest)
+The icon of little hedgehog (MARY🦋,Pinterest)
+The icon of note (GuarenteJessica, Pinterest)
+The icon of note (NguyễnHiền Hiền, Pinterest)
+Songs：
+Isobel Waller-Bridge,RSVP Voices - Kyrie (feat. RSVP Voices).
+Sound effects：
+Camera4：https://freesound.org/people/kwahmah_02/sounds/260612/
+Click1：https://freesound.org/people/EdgardEdition/sounds/113051/ 
+Laser：https://freesound.org/people/Leszek_Szary/sounds/146725/
+Old Keyboard Typing 4：https://freesound.org/people/KittyKatHunter/sounds/644840/ 
+vinyl crackles loop： https://freesound.org/people/Jay_You/sounds/383762/
+.</div>
+                            <div class="reference-item">Videos:
+Can We Detect Neural Image Generators? (2020) [Online video] Two Minute Papers. Available: https://www.youtube.com/watch?v=mjl4NEMG0JE&t=1s [Accessed:6 December 2025].
+The future of AI in photography: what you need to know (2025) [Online video] Emily Kim. Available: https://www.youtube.com/watch?v=rgMOoVDl2Qs&t=84s [Accessed:3 December 2025].
+Yes, AI might take your photography jobs (2024) [Online video] Katja Feldmeier. Available: https://www.youtube.com/watch?v=bhXNoRqCbAs [Accessed:7 December 2025].
+.</div>
+                        </div>
+                    </div>
+                    
+                    <div class="declaration-section">
+                        <h4 class="footer-title">METHODOLOGICAL NOTES</h4>
+                        <div class="declaration-content">
+                            <p>This experimental website uses AI-generated imagery as research material. 
+                            All textual content is human-authored. The page design and code writing were all completed personally, ensuring that no templates were used.</p>
+                            <p>Project created for CMCU9DM: Applied Digital Media. Academic inquiry into authenticity, 
+                            authorship, and perception in post-photographic era.
+                        </p>Thank you for watching!
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="footer-meta">
+                    <div class="meta-item">CMCU9DM - Applied Digital Media: From Theory to Practice </div>
+                    <div class="meta-item">2025</div>
+                    <div class="meta-item">ⓒRileyLiu(YueyanLiu)</div>
+                </div>
+            </div>
+        </footer>
+

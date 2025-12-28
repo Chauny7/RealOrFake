@@ -1,0 +1,4299 @@
+/* ===== 重置与基础 ===== */
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+:root {
+    --black: #000000;
+    --white: #ffffff;
+    --gray-10: #1a1a1a;
+    --gray-20: #2d2d2d;
+    --gray-30: #404040;
+    --gray-40: #666666;
+    --gray-50: #8c8c8c;
+    --gray-60: #b3b3b3;
+    --gray-70: #d9d9d9;
+    --gray-80: #e6e6e6;
+    --gray-90: #f2f2f2;
+    
+    --pencil-black: #1a1a1a;
+    --pencil-gray: #4d4d4d;
+    --paper-white: #f8f5f0;
+    --paper-cream: #f0ebe0;
+    --paper-stain: #e8e2d6;
+    
+    --sketch-line: rgba(0, 0, 0, 0.15);
+    --ghost-opacity: 0.08;
+    --fade-speed: 0.8s;
+    
+    font-size: 16px;
+}
+
+html {
+    scroll-behavior: smooth;
+}
+
+body {
+    font-family: 'DM Mono', monospace;
+    background-color: var(--paper-white);
+    color: var(--black);
+    line-height: 1.6;
+    overflow-x: hidden;
+    letter-spacing: -0.01em;
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+}
+
+/* 确保内容可见 */
+#main-content {
+    opacity: 1 !important;
+    visibility: visible !important;
+    display: block !important;
+}
+
+.hidden {
+    display: none !important;
+    opacity: 0 !important;
+    visibility: hidden !important;
+}
+
+/* ===== 通用容器 ===== */
+.section-container {
+    width: 100%;
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 0 2rem;
+}
+
+/* ===== 素描加载页 ===== */
+.loading-screen {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100vh;
+    background-color: var(--paper-white);
+    z-index: 9999;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    transition: opacity var(--fade-speed) ease-out;
+}
+
+.sketch-container {
+    position: relative;
+    width: 100%;
+    height: 100%;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+}
+
+.sketch-grid {
+    position: absolute;
+    width: 100%;
+    height: 100%;
+    pointer-events: none;
+}
+
+.grid-line {
+    position: absolute;
+    background-color: var(--sketch-line);
+}
+
+.grid-line.vertical {
+    left: 50%;
+    top: 0;
+    width: 1px;
+    height: 100%;
+    transform: translateX(-50%);
+}
+
+.grid-line.horizontal {
+    top: 50%;
+    left: 0;
+    width: 100%;
+    height: 1px;
+    transform: translateY(-50%);
+}
+
+/* .grid-line.diagonal {
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: linear-gradient(45deg, transparent 49.5%, var(--sketch-line) 49.5%, var(--sketch-line) 50.5%, transparent 50.5%); */
+/* }  */
+
+.sketch-title {
+    text-align: center;
+    margin-bottom: 7rem;
+    position: relative;
+    z-index: 2;
+}
+
+.sketch-text {
+    font-family: 'Special Elite', cursive;
+    font-size: clamp(2.5rem, 8vw, 5rem);
+    font-weight: 400;
+    color: var(--black);
+    letter-spacing: 0.2em;
+    text-transform: uppercase;
+    margin-bottom: 1rem;
+    position: relative;
+    line-height: 1.2;
+}
+
+.sketch-text::before {
+    content: '';
+    position: absolute;
+    top: 50%;
+    left: -2rem;
+    right: -2rem;
+    height: 1px;
+    background-color: var(--black);
+    opacity: 0.3;
+}
+
+.amp {
+    font-family: 'Crimson Text', serif;
+    font-style: italic;
+    font-size: clamp(3rem, 9vw, 6rem);
+    margin: 0 0.5rem;
+    opacity: 0.7;
+    display: inline-block;
+}
+
+.sketch-subtitle {
+    font-family: 'Crimson Text', serif;
+    font-style: italic;
+    font-size: clamp(1.8rem, 4vw, 2.4rem);
+    color: var(--gray-40);
+    letter-spacing: 0.1em;
+}
+
+/* .signature-container {
+    margin: 3rem 0;
+    opacity: 0.7;
+} */
+ .signature-container {
+  margin: 3rem 0;
+  opacity: 1; /* 原0.7，改为1更清晰 */
+  display: flex;
+  /* justify-content: center; 签名居中 */
+  /* 新增：让签名容器占满加载页宽度，居中更稳 */
+  width: 100%;
+  padding: 2rem 0;
+}
+
+.signature {
+    height: 80px;
+    width: auto;
+    filter: grayscale(100%);
+    opacity: 0.8;
+}
+.signature-img {
+  /* 关键：脱离文档流，绝对居中 */
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%) translateY(50px) rotate(-1deg);
+  /* 控制大小 
+  width: 40vw;    
+  height: auto;
+  max-width: none;    /* 取消 max-width 限制 */
+  filter: grayscale(100%);
+  opacity: 0;
+  animation: fadeInSignature 10s ease-out 1s forwards;
+  z-index: 3;
+}
+
+@keyframes fadeInSignature {
+  0% { opacity: 0; } /* 淡入开始 */
+  20% { opacity: 1; } /* 3秒时完全显示 */
+  100% { opacity: 1; } /* 最后保持显示（不再消失） */
+}
+.loading-note {
+    position: absolute;
+    bottom: 4rem;
+    left: 2rem;
+    font-size: 0.9rem;
+    color: var(--gray-50);
+    font-family: 'DM Mono', monospace;
+}
+
+.note-line {
+    margin-bottom: 0.5rem;
+    opacity: 0;
+    animation: fadeInLine 2s ease-out forwards; /* 1s → 2s，淡入更慢 */
+}
+
+.note-line:nth-child(1) { animation-delay: 0.5s; }
+.note-line:nth-child(2) { animation-delay: 1.5s; }
+.note-line:nth-child(3) { animation-delay: 2.5s; }
+
+@keyframes fadeInLine {
+    to {
+        opacity: 1;
+    }
+}
+
+/* ===== 实验性导航 ===== */
+.experimental-nav {
+    position: fixed;
+    top: 2rem;
+    right: 2rem;
+    z-index: 1000;
+    display: flex;
+    flex-direction: column;
+    align-items: flex-end;
+    gap: 1rem;
+}
+
+.nav-dots {
+    display: flex;
+    flex-direction: column;
+    gap: 1.5rem;
+}
+
+.dot {
+    width: 12px;
+    height: 12px;
+    border: 1px solid var(--black);
+    border-radius: 50%;
+    background-color: transparent;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    position: relative;
+}
+
+.dot.active {
+    background-color: var(--black);
+}
+
+.dot::before {
+    content: '';
+    position: absolute;
+    top: 50%;
+    right: calc(100% + 1rem);
+    width: 0;
+    height: 1px;
+    background-color: var(--black);
+    opacity: 0;
+    transition: all 0.3s ease;
+}
+
+.dot:hover::before {
+    width: 2rem;
+    opacity: 0.5;
+}
+
+.nav-label {
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+    transform: rotate(90deg) translateX(100%);
+    transform-origin: right center;
+    position: absolute;
+    right: 0;
+    top: 8rem;
+}
+
+.label-text {
+    font-size: 0.7rem;
+    letter-spacing: 0.2em;
+    color: var(--gray-40);
+    text-transform: uppercase;
+    white-space: nowrap;
+}
+
+.label-line {
+    width: 50px;
+    height: 1px;
+    background-color: var(--gray-40);
+}
+
+/* ===== 首页幻影部分 ===== */
+.hero-section {
+    height: 100vh;
+    position: relative;
+    overflow: hidden;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    padding: 0 2rem;
+}
+
+.hero-canvas {
+    position: absolute;
+    width: 100%;
+    height: 100%;
+    pointer-events: none;
+}
+
+.ghost-figure {
+    position: absolute;
+    opacity: var(--ghost-opacity);
+    transition: all 0.5s ease;
+}
+
+.figure-1 {
+    top: 20%;
+    left: 10%;
+    width: 200px;
+    height: 400px;
+}
+
+.figure-2 {
+    top: 40%;
+    right: 15%;
+    width: 150px;
+    height: 300px;
+}
+
+.figure-3 {
+    bottom: 30%;
+    left: 50%;
+    transform: translateX(-50%);
+    width: 180px;
+    height: 350px;
+}
+
+.figure-outline {
+    position: absolute;
+    width: 100%;
+    height: 100%;
+    border: 1px solid var(--black);
+    border-radius: 2px;
+    opacity: 0.3;
+}
+
+.figure-shade {
+    position: absolute;
+    width: 80%;
+    height: 90%;
+    top: 5%;
+    left: 10%;
+    background-color: var(--black);
+    opacity: 0.05;
+    filter: blur(10px);
+}
+
+.figure-text {
+    position: absolute;
+    bottom: -2rem;
+    left: 0;
+    width: 100%;
+    text-align: center;
+    font-size: 0.8rem;
+    color: var(--gray-40);
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+}
+/* 人物幻影图片样式 */
+.ghost-image {
+    position: absolute;
+    width: 100%;
+    height: 100%;
+    top: 0;
+    left: 0;
+    overflow: hidden;
+    z-index: 1;
+}
+
+.fade-image {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    opacity: 0.2; /* 初始透明度 - 若隐若现 */
+    transition: opacity 0.5s ease; /* 平滑过渡效果 */
+    filter: contrast(0.8) brightness(0.7); /* 增强幻影效果 */
+}
+.text-fragment {
+    position: absolute;
+    font-family: 'Crimson Text', serif;
+    font-style: italic;
+    font-size: clamp(1rem, 3vw, 1.5rem);
+    color: var(--gray-30);
+    opacity: 0.3;
+    pointer-events: none;
+    transition: all 0.5s ease;
+}
+
+.frag-1 { top: 15%; left: 5%; }
+.frag-2 { top: 25%; right: 10%; }
+.frag-3 { bottom: 20%; left: 8%; }
+.frag-4 { bottom: 30%; right: 5%; }
+
+.hero-question {
+    position: relative;
+    z-index: 2;
+    text-align: center;
+    margin-bottom: 4rem;
+}
+
+.question-mark {
+    font-family: 'Crimson Text', serif;
+    font-size: clamp(5rem, 15vw, 15rem);
+    font-weight: 600;
+    color: var(--black);
+    opacity: 0.1;
+    margin-bottom: 2rem;
+    line-height: 1;
+}
+
+.question-text {
+    font-family: 'DM Mono', monospace;
+    font-size: clamp(1.2rem, 2.7vw, 1.7rem);
+    color: var(--gray-30);
+}
+
+/* 文字逐行淡入 */
+.type-line {
+  display: block;
+  margin-bottom: 0.5rem;
+  opacity: 0;
+  transform: translateY(10px);
+}
+
+.type-line.animate {
+  animation: typeIn 1s ease-out forwards;
+}
+
+.type-line:nth-child(1).animate { animation-delay: 0.5s; }
+.type-line:nth-child(2).animate { animation-delay: 1.5s; }
+.type-line:nth-child(3).animate { animation-delay: 2.5s; }
+
+@keyframes typeIn {
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+.scroll-hint {
+    position: absolute;
+    bottom: 3rem;
+    left: 50%;
+    transform: translateX(-50%);
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 0.5rem;
+}
+
+.hint-line {
+    width: 1px;
+    height: 60px;
+    background-color: var(--gray-50);
+    animation: linePulse 2s ease-in-out infinite;
+}
+
+.hint-text {
+    font-size: 1rem;
+    letter-spacing: 0.2em;
+    color: var(--gray-40);
+    text-transform: uppercase;
+    text-align: center;
+}
+
+@keyframes typeIn {
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+@keyframes linePulse {
+    0%, 100% { opacity: 0.3; height: 40px; }
+    50% { opacity: 1; height: 60px; }
+}
+
+.typewriter-section {
+  min-height: 100vh;
+  /* 修改为 flex 布局，以便左右排列 */
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  padding: 4rem 2rem;
+  position: relative;
+}
+
+/* ===== 修改后的 .typewriter-content-wrapper 样式 ===== */
+.typewriter-content-wrapper {
+  display: flex;
+  width: 100%;
+  max-width: 1200px;
+  gap: 2rem;
+  /* 新增：设置左右宽度比例 (4:3) */
+  /* 左侧文本区域占 4 份，右侧唱片区域占 3 份 */
+}
+
+.intro-content-panel {
+  flex: 4; /* 占 4 份 */
+  min-width: 0;
+  position: relative;
+  padding: clamp(2rem, 4vw, 3rem);
+  /* 可选：为左侧内容添加最大宽度，防止在超大屏幕上过宽 */
+  max-width: 700px;
+}
+
+.album-transition {
+  flex: 3; /* 占 3 份 */
+  text-align: center;
+  margin-top: 4rem;
+  position: relative;
+  /* 缩小唱片尺寸 */
+  width: clamp(300px, 60vw, 600px); /* 调整了尺寸 */
+  height: auto;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  border: none;
+  box-shadow: none;
+  transform: rotate(0deg);
+  transition: transform 0.1s linear;
+  background-color: transparent;
+}
+
+/* 如果你想让唱片在小屏幕上也保持良好显示，可以添加响应式规则 */
+@media (max-width: 768px) {
+  .typewriter-content-wrapper {
+    flex-direction: column; /* 小屏幕时变为上下排列 */
+    gap: 2rem;
+  }
+  .album-transition {
+    width: 100%; /* 小屏幕时宽度占满 */
+    max-width: 400px; /* 限制最大宽度 */
+  }
+}
+
+.typewriter-paper {
+    position: relative;
+    width: min(800px, 90%);
+    background-color: var(--paper-cream);
+    padding: clamp(2rem, 5vw, 4rem);
+    box-shadow: 
+        0 4px 20px rgba(0, 0, 0, 0.05),
+        inset 0 0 100px rgba(0, 0, 0, 0.02);
+    border: 1px solid rgba(0, 0, 0, 0.1);
+    margin-bottom: 4rem;
+}
+
+.paper-texture {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-image: 
+        radial-gradient(circle at 10% 20%, rgba(0, 0, 0, 0.02) 1px, transparent 1px),
+        radial-gradient(circle at 90% 80%, rgba(0, 0, 0, 0.02) 1px, transparent 1px);
+    background-size: 30px 30px;
+    pointer-events: none;
+}
+
+.paper-content {
+    position: relative;
+    z-index: 1;
+}
+
+.typewriter-line {
+    margin-bottom: 1.5rem;
+    font-family: 'DM Mono', monospace;
+    font-size: clamp(0.9rem, 2vw, 1.1rem);
+    line-height: 1.8;
+    min-height: 1.8em;
+    opacity: 0;
+    transform: translateY(20px);
+    transition: opacity 0.5s ease, transform 0.5s ease;
+}
+
+.typewriter-line.visible {
+    opacity: 1;
+    transform: translateY(0);
+}
+
+.typed-text {
+    display: inline-block;
+}
+
+.cursor {
+    display: inline-block;
+    animation: blink 1s infinite;
+    color: var(--gray-50);
+}
+
+.paper-stain {
+    position: absolute;
+    background-color: var(--paper-stain);
+    border-radius: 50%;
+    opacity: 0.3;
+    pointer-events: none;
+}
+
+.stain-1 {
+    top: 10%;
+    right: 5%;
+    width: 100px;
+    height: 150px;
+    transform: rotate(30deg);
+}
+
+.stain-2 {
+    bottom: 15%;
+    left: 8%;
+    width: 80px;
+    height: 120px;
+    transform: rotate(-15deg);
+}
+
+.paper-fold {
+    position: absolute;
+    top: -10px;
+    right: 30px;
+    width: 60px;
+    height: 60px;
+    background: linear-gradient(135deg, transparent 50%, rgba(0, 0, 0, 0.05) 50%);
+    transform: rotate(45deg);
+}
+
+/* 相机镜头过渡
+.camera-transit/ion {
+    text-align: center;
+    margin-top: 4rem;
+}
+
+.camera-lens {
+    display: inline-block;
+    position: relative;
+}
+
+.lens-ring {
+    width: clamp(200px, 40vw, 400px);
+    height: clamp(200px, 40vw, 400px);
+    border: 2px solid var(--black);
+    border-radius: 50%;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    margin: 0 auto;
+    position: relative;
+    transition: transform 0.1s linear;
+}
+
+.lens-inner {
+    width: 70%;
+    height: 70%;
+    border: 3px solid var(--gray-50);
+    border-radius: 50%;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.aperture {
+    width: 50%;
+    height: 50%;
+    background: radial-gradient(circle, #333 0%, #000 100%);
+    border-radius: 50%;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    box-shadow: 0 0 30px rgba(0, 0, 0, 0.3);
+}
+
+.aperture-text {
+    font-family: monospace;
+    font-size: clamp(0.9rem, 2vw, 1.2rem);
+    color: var(--gray-50);
+    letter-spacing: 2px;
+} */ */
+
+/* @keyframes blink {
+    0%, 50% { opacity: 1; }
+    51%, 100% { opacity: 0; }
+} */
+
+/* ===== 实验介绍 ===== */
+.intro-section {
+    min-height: 100vh;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    padding: 4rem 2rem;
+    position: relative;
+}
+
+.experiment-frame {
+    position: relative;
+    width: min(900px, 90%);
+    padding: clamp(2rem, 4vw, 3rem);
+}
+
+.frame-border {
+    position: absolute;
+    background-color: var(--black);
+}
+
+.frame-border.left {
+    left: 0;
+    top: 2rem;
+    bottom: 2rem;
+    width: 1px;
+}
+
+.frame-border.right {
+    right: 0;
+    top: 2rem;
+    bottom: 2rem;
+    width: 1px;
+}
+
+.frame-border.top {
+    top: 0;
+    left: 2rem;
+    right: 2rem;
+    height: 1px;
+}
+
+.frame-border.bottom {
+    bottom: 0;
+    left: 2rem;
+    right: 2rem;
+    height: 1px;
+}
+
+.experiment-content {
+    padding: 2rem;
+}
+
+.experiment-title {
+    display: flex;
+    align-items: baseline;
+    gap: 1rem;
+    margin-bottom: 3rem;
+    font-family: 'DM Mono', monospace;
+}
+
+.title-number {
+    font-size: 5rem;
+    color: var(--gray-40);
+    letter-spacing: 0.2em;
+}
+
+.title-text {
+    font-size: clamp(1.2rem, 3vw, 1.5rem);
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+}
+
+.experiment-description {
+    margin-bottom: 4rem;
+}
+
+.desc-line {
+    font-family: 'Crimson Text', serif;
+    font-size: clamp(1rem, 2.5vw, 1.2rem);
+    line-height: 1.8;
+    margin-bottom: 0.5rem;
+    color: var(--gray-30);
+}
+
+.tool-icons {
+  display: flex;
+  justify-content: center;
+  gap: clamp(1rem, 3vw, 2.5rem); /* 适当缩小最大间距 */
+  margin-bottom: 3rem;
+  flex-wrap: wrap;
+}
+.tool-icon {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 0.5rem;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  /* 限制最大宽度，避免大屏图标过大 */
+  max-width: 120px;
+}
+.icon-circle {
+  width: 80px;
+  height: 80px;
+  /* ... 其他样式保持不变 ... */
+}
+
+.icon-circle {
+    width: 80px;
+    height: 80px;
+    border: 1px solid var(--black);
+    border-radius: 50%;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    overflow: hidden;
+    background: var(--paper-white);
+}
+
+.icon-img {
+    width: 60%;
+    height: 60%;
+    object-fit: contain;
+    filter: grayscale(100%);
+    opacity: 0.7;
+    transition: all 0.3s ease;
+}
+
+.tool-icon:hover .icon-img {
+    filter: grayscale(0%);
+    opacity: 1;
+}
+
+.icon-label {
+    font-size: 0.8rem;
+    letter-spacing: 0.1em;
+    color: var(--gray-40);
+    text-transform: uppercase;
+}
+
+.experiment-note {
+    display: flex;
+    align-items: flex-start;
+    gap: 1rem;
+    padding: 1.5rem;
+    background-color: rgba(0, 0, 0, 0.02);
+    border-left: 2px solid var(--gray-50);
+}
+
+.note-symbol {
+    font-size: 1.2rem;
+    color: var(--gray-40);
+}
+
+.note-text {
+    font-family: 'Crimson Text', serif;
+    font-style: italic;
+    font-size: clamp(0.8rem, 2vw, 0.9rem);
+    color: var(--gray-40);
+    line-height: 1.6;
+}
+
+/* ===== 游戏测试部分 ===== */
+.game-section {
+    min-height: 100vh;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    padding: 4rem 2rem;
+    background-color: var(--paper-cream);
+}
+
+.test-protocol {
+    width: 100%;
+    max-width: 1000px;
+}
+
+.protocol-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-end;
+    margin-bottom: 3rem;
+    padding-bottom: 1rem;
+    border-bottom: 1px solid var(--gray-70);
+    flex-wrap: wrap;
+    gap: 1rem;
+}
+
+.protocol-title {
+    font-family: 'DM Mono', monospace;
+    font-size: 0.9rem;
+    letter-spacing: 0.2em;
+    text-transform: uppercase;
+    color: var(--gray-40);
+}
+
+.protocol-info {
+    display: flex;
+    gap: 2rem;
+}
+
+.info-item {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-end;
+}
+
+.info-label {
+    font-size: 0.7rem;
+    letter-spacing: 0.1em;
+    color: var(--gray-40);
+    text-transform: uppercase;
+    margin-bottom: 0.3rem;
+}
+
+.info-value {
+    font-family: 'DM Mono', monospace;
+    font-size: 1.5rem;
+    font-weight: 500;
+    color: var(--black);
+}
+
+.test-interface {
+    min-height: 500px;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+}
+
+.test-intro {
+    text-align: center;
+    margin-bottom: 2rem;
+}
+
+.intro-prompt {
+    margin-bottom: 2rem;
+}
+
+.prompt-text {
+    font-family: 'Special Elite', cursive;
+    font-size: clamp(1.5rem, 4vw, 2.5rem);
+    margin-bottom: 0.5rem;
+    letter-spacing: 0.1em;
+}
+
+.prompt-sub {
+    font-family: 'Crimson Text', serif;
+    font-style: italic;
+    font-size: clamp(1.8rem, 4vw, 2.2rem);
+    color: var(--gray-40);
+}
+
+/* 图片对比界面 - 3:4竖版图片 */
+.comparison-view {
+    animation: fadeIn 0.5s ease-out;
+}
+
+.comparison-frame {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    gap: clamp(2rem, 4vw, 4rem);
+    margin-bottom: 2rem;
+    flex-wrap: wrap;
+}
+
+.image-slot {
+    flex: 1;
+    min-width: 300px;
+    max-width: 400px;
+    position: relative;
+    transition: all 0.3s ease;
+}
+
+.image-slot:hover {
+    transform: translateY(-5px);
+}
+
+.slot-label {
+    font-family: 'DM Mono', monospace;
+    font-size: 0.8rem;
+    letter-spacing: 0.2em;
+    text-transform: uppercase;
+    color: var(--gray-40);
+    margin-bottom: 1rem;
+    text-align: center;
+}
+
+.image-container {
+    position: relative;
+    width: 100%;
+    height: 0;
+    padding-bottom: 133.33%; /* 3:4 aspect ratio (4/3 = 1.3333) */
+    overflow: hidden;
+    border: 1px solid var(--gray-70);
+    background-color: var(--white);
+    cursor: pointer;
+}
+
+.test-image {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    transition: transform 0.5s ease;
+}
+
+.image-container:hover .test-image {
+    transform: scale(1.02);
+}
+
+.image-overlay {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(0, 0, 0, 0.7);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    opacity: 0;
+    transition: opacity 0.3s ease;
+}
+
+.image-container:hover .image-overlay {
+    opacity: 1;
+}
+
+.overlay-text {
+    font-family: 'DM Mono', monospace;
+    font-size: 0.9rem;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    color: var(--white);
+    padding: 1rem 2rem;
+    border: 1px solid var(--white);
+    text-align: center;
+}
+
+.comparison-divider {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 1rem;
+    flex-shrink: 0;
+}
+
+.divider-line {
+    width: 1px;
+    height: 100px;
+    background-color: var(--gray-70);
+}
+
+.divider-text {
+    font-family: 'Special Elite', cursive;
+    font-size: 1.5rem;
+    color: var(--gray-40);
+    padding: 0 1rem;
+}
+
+/* ===== 最终确认界面 ===== */
+.final-confirmation {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100vh;
+    background-color: rgba(248, 245, 240, 0.95);
+    backdrop-filter: blur(10px);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    z-index: 1000;
+    padding: 2rem;
+}
+
+.final-confirm-content {
+    max-width: 600px;
+    width: 100%;
+    text-align: center;
+    background: var(--paper-cream);
+    padding: 4rem;
+    border: 1px solid var(--gray-70);
+    box-shadow: 0 20px 60px rgba(0, 0, 0, 0.1);
+}
+
+.final-question {
+    margin-bottom: 3rem;
+}
+
+.final-question-mark {
+    font-family: 'Crimson Text', serif;
+    font-size: 8rem;
+    color: var(--gray-40);
+    opacity: 0.5;
+    margin-bottom: 1rem;
+    line-height: 1;
+}
+
+.final-question-text {
+    font-family: 'DM Mono', monospace;
+    font-size: 1.5rem;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    margin-bottom: 1rem;
+    color: var(--black);
+}
+
+.final-question-sub {
+    font-family: 'Crimson Text', serif;
+    font-style: italic;
+    font-size: 1.5rem;
+    color: var(--gray-40);
+    line-height: 1.6;
+}
+
+.final-confirm-options {
+    display: flex;
+    flex-direction: column;
+    gap: 1rem;
+}
+
+.final-confirm-btn, .final-review-btn {
+    padding: 1.2rem 2rem;
+    border: 1px solid var(--black);
+    font-family: 'DM Mono', monospace;
+    font-size: 0.9rem;
+    letter-spacing: 0.2em;
+    text-transform: uppercase;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    position: relative;
+    overflow: hidden;
+}
+
+.final-confirm-btn {
+    background-color: var(--black);
+    color: var(--white);
+}
+
+.final-confirm-btn:hover {
+    background-color: var(--gray-20);
+}
+
+.confirm-line {
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    width: 100%;
+    height: 1px;
+    background-color: var(--white);
+    transform: scaleX(0);
+    transform-origin: left;
+    transition: transform 0.3s ease;
+}
+
+.final-confirm-btn:hover .confirm-line {
+    transform: scaleX(1);
+}
+
+.final-review-btn {
+    background-color: transparent;
+    color: var(--black);
+}
+
+.final-review-btn:hover {
+    background-color: rgba(0, 0, 0, 0.05);
+}
+
+/* ===== 雪花屏揭示部分 ===== */
+.reveal-section {
+    min-height: 100vh;
+    position: relative;
+    overflow: hidden;
+    background: linear-gradient(180deg, #0a0a0a 0%, #1a1a1a 100%);
+    color: var(--white);
+}
+
+.snowfall-container {
+    position: relative;
+    width: 100%;
+    height: 100vh;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    overflow: hidden;
+}
+
+.snowflakes {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    pointer-events: none;
+    z-index: 1;
+}
+
+.snowflake {
+    position: absolute;
+    background-color: var(--white);
+    border-radius: 50%;
+    opacity: 0.8;
+    filter: blur(1px);
+}
+
+.reveal-content {
+    position: relative;
+    z-index: 2;
+    text-align: center;
+    max-width: 800px;
+    padding: 2rem;
+}
+
+.wrong-title {
+    font-family: 'Special Elite', cursive;
+    font-size: clamp(6rem, 16vw, 12rem);
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    margin-bottom: 10rem;
+    line-height: 1.2;
+    animation: wrongFlash 1.5s ease-in-out infinite;
+}
+
+.reveal-message {
+    margin: 4rem 0;
+    max-width: 600px;
+    margin-left: auto;
+    margin-right: auto;
+}
+
+.reveal-message p {
+    font-family: 'Crimson Text', serif;
+    font-size: clamp(1rem, 2vw, 1.2rem);
+    line-height: 1.8;
+    margin-bottom: 1.5rem;
+    color: var(--gray-70);
+    opacity: 0;
+    transform: translateY(20px);
+    transition: all 0.5s ease;
+}
+
+.reveal-message p.visible {
+    opacity: 1;
+    transform: translateY(0);
+}
+
+.deception-btn {
+    position: relative;
+    padding: 1.5rem 3rem;
+    background: transparent;
+    border: 2px solid var(--white);
+    font-family: 'DM Mono', monospace;
+    font-size: 1rem;
+    letter-spacing: 0.2em;
+    text-transform: uppercase;
+    color: var(--white);
+    cursor: pointer;
+    transition: all 0.3s ease;
+    overflow: hidden;
+    margin-top: 2rem;
+}
+
+.deception-btn:hover {
+    background-color: rgba(255, 255, 255, 0.1);
+}
+
+.deception-btn .btn-sketch {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: linear-gradient(
+        45deg,
+        transparent 49%,
+        var(--gray-60) 49%,
+        var(--gray-60) 51%,
+        transparent 51%
+    );
+    opacity: 0;
+    transition: opacity 0.3s ease;
+}
+
+.deception-btn:hover .btn-sketch {
+    opacity: 0.1;
+}
+
+@keyframes wrongFlash {
+    0%, 100% {
+        opacity: 1;
+        transform: scale(1);
+    }
+    50% {
+        opacity: 0.7;
+        transform: scale(1.05);
+    }
+}
+
+/* ===== 分析部分 ===== */
+.analysis-section {
+    padding: 8rem 2rem;
+    background-color: var(--paper-white);
+}
+
+.analysis-header {
+    text-align: center;
+    margin-bottom: 4rem;
+}
+
+.analysis-title {
+    font-family: 'Special Elite', cursive;
+    font-size: clamp(1.8rem, 4vw, 2.5rem);
+    letter-spacing: 0.1em;
+    margin-bottom: 1rem;
+}
+
+.analysis-subtitle {
+    font-family: 'Crimson Text', serif;
+    font-style: italic;
+    font-size: clamp(1rem, 2.5vw, 1.2rem);
+    color: var(--gray-40);
+    max-width: 700px;
+    margin: 0 auto;
+}
+
+.analysis-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+    gap: 2rem;
+    margin-bottom: 4rem;
+}
+
+.analysis-card {
+    background-color: var(--white);
+    border: 1px solid var(--gray-70);
+    padding: 2rem;
+    position: relative;
+    transition: all 0.3s ease;
+    opacity: 0;
+    transform: translateY(20px);
+}
+
+.analysis-card.visible {
+    opacity: 1;
+    transform: translateY(0);
+}
+
+.analysis-card:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.05);
+}
+
+.analysis-image {
+    width: 100%;
+    height: 400px;
+    object-fit: cover;
+    margin-bottom: 1.5rem;
+    filter: grayscale(100%);
+    transition: filter 0.3s ease;
+}
+
+.analysis-card:hover .analysis-image {
+    filter: grayscale(0%);
+}
+
+.analysis-card h4 {
+    font-family: 'DM Mono', monospace;
+    font-size: 1.1rem;
+    font-weight: 500;
+    margin-bottom: 0.5rem;
+    color: var(--black);
+}
+
+.analysis-card p {
+    font-family: 'Crimson Text', serif;
+    font-size: 0.95rem;
+    line-height: 1.6;
+    color: var(--gray-30);
+    margin-bottom: 1rem;
+}
+.analysis-footnote {
+    display: flex;
+    gap: 1rem;
+    padding: 2rem;
+    background-color: rgba(0, 0, 0, 0.02);
+    border-left: 2px solid var(--gray-50);
+    max-width: 800px;
+    margin: 0 auto;
+}
+
+.footnote-symbol {
+    font-family: 'Crimson Text', serif;
+    font-size: 1.5rem;
+    color: var(--gray-40);
+    line-height: 1;
+}
+
+.footnote-text {
+    font-family: 'Crimson Text', serif;
+    font-style: italic;
+    font-size: 0.95rem;
+    line-height: 1.6;
+    color: var(--gray-40);
+}
+
+/* ===== 页脚 ===== */
+.experiment-footer {
+    padding: 4rem 2rem;
+    background-color: var(--gray-10);
+    color: var(--white);
+}
+
+.footer-content {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+    gap: 4rem;
+    margin-bottom: 3rem;
+}
+
+.footer-title {
+    font-family: 'DM Mono', monospace;
+    font-size: 0.9rem;
+    letter-spacing: 0.2em;
+    text-transform: uppercase;
+    color: var(--gray-60);
+    margin-bottom: 1.5rem;
+}
+
+.reference-list {
+    display: flex;
+    flex-direction: column;
+    gap: 1rem;
+}
+
+.reference-item {
+    font-family: 'Crimson Text', serif;
+    font-size: 0.9rem;
+    line-height: 1.6;
+    color: var(--gray-60);
+}
+
+.reference-item em {
+    font-style: italic;
+}
+
+.declaration-content {
+    display: flex;
+    flex-direction: column;
+    gap: 1rem;
+}
+
+.declaration-content p {
+    font-family: 'Crimson Text', serif;
+    font-size: 0.9rem;
+    line-height: 1.6;
+    color: var(--gray-60);
+}
+
+.footer-meta {
+    display: flex;
+    justify-content: center;
+    gap: 3rem;
+    padding-top: 2rem;
+    border-top: 1px solid var(--gray-30);
+    flex-wrap: wrap;
+}
+
+.meta-item {
+    font-family: 'DM Mono', monospace;
+    font-size: 0.8rem;
+    letter-spacing: 0.2em;
+    text-transform: uppercase;
+    color: var(--gray-50);
+}
+
+/* ===== 动画和工具类 ===== */
+@keyframes fadeIn {
+    from {
+        opacity: 0;
+        transform: translateY(20px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+@keyframes bounce {
+    0%, 20%, 50%, 80%, 100% {
+        transform: translateY(0);
+    }
+    40% {
+        transform: translateY(-10px);
+    }
+    60% {
+        transform: translateY(-5px);
+    }
+}
+
+/* 滚动动画 */
+[data-scroll] {
+    opacity: 0;
+    transform: translateY(30px);
+    transition: all 7s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+[data-scroll].visible {
+    opacity: 1;
+    transform: translateY(0);
+}
+
+/* 响应式设计 */
+@media (max-width: 768px) {
+    .section-container {
+        padding: 0 1rem;
+    }
+    
+    .experimental-nav {
+        right: 1rem;
+        top: 1rem;
+    }
+    
+    .nav-label {
+        display: none;
+    }
+    
+    .comparison-frame {
+        flex-direction: column;
+        gap: 1.5rem;
+    }
+    
+    .image-slot {
+        max-width: 100%;
+    }
+    
+    .footer-content {
+        grid-template-columns: 1fr;
+    }
+    
+    .footer-meta {
+        flex-direction: column;
+        align-items: center;
+        gap: 1rem;
+    }
+    
+    .analysis-image {
+        height: 300px;
+    }
+}
+
+@media (max-width: 480px) {
+    .sketch-text {
+        font-size: 2rem;
+        letter-spacing: 0.1em;
+    }
+    
+    .amp {
+        font-size: 2.5rem;
+    }
+    
+    .typewriter-paper {
+        padding: 1.5rem;
+    }
+    
+    .wrong-title {
+        font-size: 2.5rem;
+    }
+}
+/* ===== 极简强抖动 + 1.5倍放大（必生效） ===== */
+.sketch-text .shake-word {
+  font-weight: 700 !important;
+  position: relative !important;
+  /* 核心：只做旋转抖动，幅度大、易感知 */
+  animation: strongShake 2s ease-in-out infinite !important;
+  transition: all 0.3s ease-out !important;
+  text-shadow: 1px 1px 0 #000, -1px -1px 0 #fff !important;
+  display: inline-block !important; /* 必须保留 */
+}
+
+/* 只做旋转抖动（幅度大，肉眼一眼能看到） */
+@keyframes strongShake {
+  0% { transform: rotate(0deg) !important; }
+  25% { transform: rotate(3deg) !important; } /* 向右转3度（明显） */
+  50% { transform: rotate(-3deg) !important; } /* 向左转3度（明显） */
+  75% { transform: rotate(2deg) !important; } /* 向右转2度 */
+  100% { transform: rotate(0deg) !important; }
+}
+
+/* 悬浮放大1.5倍 + 抖动加快 */
+.sketch-text .shake-word:hover {
+  transform: scale(1.5) rotate(0deg) !important; /* 放大时先回正，再抖 */
+  animation: strongShake 0.8s ease-in-out infinite !important; /* 悬浮时抖更快 */
+}
+
+/* 调整or字大小 + 确保不被抖动影响 */
+.sketch-text .amp {
+  animation: none !important;
+  transform: none !important;
+  /* 核心：调小字体（可自行改数值） */
+  font-size: 0.6em !important; /* 相对于REAL/FAKE的60%大小，推荐值 */
+  /* 可选：调整垂直对齐，避免和REAL/FAKE错位 */
+  vertical-align: middle !important;
+  /* 可选：调细一点，更柔和 */
+  font-weight: 400 !important;
+  /* 可选：缩小字间距，更协调 */
+  letter-spacing: 0 !important;
+}
+
+/* ===== 重置与基础 ===== */
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+:root {
+    --black: #000000;
+    --white: #ffffff;
+    --gray-10: #1a1a1a;
+    --gray-20: #2d2d2d;
+    --gray-30: #404040;
+    --gray-40: #666666;
+    --gray-50: #8c8c8c;
+    --gray-60: #b3b3b3;
+    --gray-70: #d9d9d9;
+    --gray-80: #e6e6e6;
+    --gray-90: #f2f2f2;
+    
+    --pencil-black: #1a1a1a;
+    --pencil-gray: #4d4d4d;
+    --paper-white: #f8f5f0;
+    --paper-cream: #f0ebe0;
+    --paper-stain: #e8e2d6;
+    
+    --sketch-line: rgba(0, 0, 0, 0.15);
+    --ghost-opacity: 0.08;
+    --fade-speed: 0.8s;
+    
+    font-size: 16px;
+}
+
+html {
+    scroll-behavior: smooth;
+}
+
+body {
+    font-family: 'DM Mono', monospace;
+    background-color: var(--paper-white);
+    color: var(--black);
+    line-height: 1.6;
+    overflow-x: hidden;
+    letter-spacing: -0.01em;
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+}
+
+/* 确保内容可见 */
+#main-content {
+    opacity: 1 !important;
+    visibility: visible !important;
+    display: block !important;
+}
+
+.hidden {
+    display: none !important;
+    opacity: 0 !important;
+    visibility: hidden !important;
+}
+
+/* ===== 通用容器 ===== */
+.section-container {
+    width: 100%;
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 0 2rem;
+}
+
+/* ===== 素描加载页 ===== */
+.loading-screen {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100vh;
+    background-color: var(--paper-white);
+    z-index: 9999;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    transition: opacity var(--fade-speed) ease-out;
+}
+
+.sketch-container {
+    position: relative;
+    width: 100%;
+    height: 100%;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+}
+
+.sketch-grid {
+    position: absolute;
+    width: 100%;
+    height: 100%;
+    pointer-events: none;
+}
+
+.grid-line {
+    position: absolute;
+    background-color: var(--sketch-line);
+}
+
+.grid-line.vertical {
+    left: 50%;
+    top: 0;
+    width: 1px;
+    height: 100%;
+    transform: translateX(-50%);
+}
+
+.grid-line.horizontal {
+    top: 50%;
+    left: 0;
+    width: 100%;
+    height: 1px;
+    transform: translateY(-50%);
+}
+
+/* .grid-line.diagonal {
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: linear-gradient(45deg, transparent 49.5%, var(--sketch-line) 49.5%, var(--sketch-line) 50.5%, transparent 50.5%); */
+/* }  */
+
+.sketch-title {
+    text-align: center;
+    margin-bottom: 4rem;
+    position: relative;
+    z-index: 2;
+}
+
+.sketch-text {
+    font-family: 'Special Elite', cursive;
+    font-size: clamp(2.5rem, 8vw, 5rem);
+    font-weight: 400;
+    color: var(--black);
+    letter-spacing: 0.2em;
+    text-transform: uppercase;
+    margin-bottom: 1rem;
+    position: relative;
+    line-height: 1.2;
+}
+
+.sketch-text::before {
+    content: '';
+    position: absolute;
+    top: 50%;
+    left: -2rem;
+    right: -2rem;
+    height: 1px;
+    background-color: var(--black);
+    opacity: 0.3;
+}
+
+.amp {
+    font-family: 'Crimson Text', serif;
+    font-style: italic;
+    font-size: clamp(3rem, 9vw, 6rem);
+    margin: 0 0.5rem;
+    opacity: 0.7;
+    display: inline-block;
+}
+
+.sketch-subtitle {
+    font-family: 'Crimson Text', serif;
+    font-style: italic;
+    font-size: clamp(1.8rem, 4vw, 2.4rem);
+    color: var(--gray-40);
+    letter-spacing: 0.1em;
+}
+
+/* .signature-container {
+    margin: 3rem 0;
+    opacity: 0.7;
+} */
+ .signature-container {
+  margin: 3rem 0;
+  opacity: 1; /* 原0.7，改为1更清晰 */
+  display: flex;
+  justify-content: center; /* 签名居中 */
+  /* 新增：让签名容器占满加载页宽度，居中更稳 */
+  width: 100%;
+  padding: 2rem 0;
+}
+
+.signature {
+    height: 80px;
+    width: auto;
+    filter: grayscale(100%);
+    opacity: 0.8;
+}
+/* 删掉原有的 .signature-container svg 样式，替换为以下代码 */
+.signature-img {
+  /* 关键：脱离文档流，绝对定位 */
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%) translateY(80px) rotate(-1deg);
+
+  /* 尺寸：用 vw 而不是 px，确保巨中 */
+  width: 36vw;          
+  max-width: none;       /* 取消 max-width 限制 */
+  height: auto;
+
+  filter: grayscale(100%);
+  opacity: 0;
+  animation: fadeInSignature 10s ease-out 1s forwards;
+
+  /* 确保在所有元素之上 */
+  z-index: 3;
+}
+.signature-caption {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, 50%) translateY(200px); 
+
+  font-family: 'Special Elite', cursive;
+  font-size: clamp(1rem, 3vw, 1.8rem);
+  color: var(--gray-40);
+  letter-spacing: 0.1em;
+  text-align: center;
+  opacity: 1;
+  animation: fadeInCaption 8s ease-out 3s forwards;
+  animation-fill-mode: forwards; /* ← 新增这行 */
+  z-index: 3;
+  /* 不要再写 position: relative; */
+}
+
+@keyframes fadeInCaption {
+  to { opacity: 1; }
+}
+
+/* 如果要下划线，加这段（可选） */
+/* .signature-caption::after {
+  content: '';
+  position: absolute;
+  bottom: -16px;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 500px;
+  height: 1px;
+  background: repeating-linear-gradient(
+    90deg,
+    var(--gray-40) 0,
+    var(--gray-40) 2px,
+    transparent 2px,
+    transparent 4px
+  );
+} */
+@keyframes fadeInSignature {
+  0% { opacity: 0; } /* 淡入开始 */
+  20% { opacity: 1; } /* 3秒时完全显示 */
+  100% { opacity: 1; } /* 最后保持显示（不再消失） */
+}
+.loading-note {
+    position: absolute;
+    bottom: 4rem;
+    left: 2rem;
+    font-size: 1rem;
+    color: var(--gray-50);
+    font-family: 'DM Mono', monospace;
+}
+
+.note-line {
+    margin-bottom: 0.5rem;
+    opacity: 0;
+    animation: fadeInLine 1s ease-out forwards; /* 1s → 2s，淡入更慢 */
+}
+
+.note-line:nth-child(1) { animation-delay: 0.25s; }
+.note-line:nth-child(2) { animation-delay: 1s; }
+.note-line:nth-child(3) { animation-delay: 2s; }
+
+@keyframes fadeInLine {
+    to {
+        opacity: 1;
+    }
+}
+
+/* ===== 实验性导航 ===== */
+.experimental-nav {
+    position: fixed;
+    top: 2rem;
+    right: 2rem;
+    z-index: 1000;
+    display: flex;
+    flex-direction: column;
+    align-items: flex-end;
+    gap: 1rem;
+}
+
+.nav-dots {
+    display: flex;
+    flex-direction: column;
+    gap: 1.5rem;
+}
+
+.dot {
+    width: 12px;
+    height: 12px;
+    border: 1px solid var(--black);
+    border-radius: 50%;
+    background-color: transparent;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    position: relative;
+}
+
+.dot.active {
+    background-color: var(--black);
+}
+
+.dot::before {
+    content: '';
+    position: absolute;
+    top: 50%;
+    right: calc(100% + 1rem);
+    width: 0;
+    height: 1px;
+    background-color: var(--black);
+    opacity: 0;
+    transition: all 0.3s ease;
+}
+
+.dot:hover::before {
+    width: 2rem;
+    opacity: 0.5;
+}
+
+.nav-label {
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+    transform: rotate(90deg) translateX(100%);
+    transform-origin: right center;
+    position: absolute;
+    right: 0;
+    top: 8rem;
+}
+
+.label-text {
+    font-size: 0.7rem;
+    letter-spacing: 0.2em;
+    color: var(--gray-40);
+    text-transform: uppercase;
+    white-space: nowrap;
+}
+
+.label-line {
+    width: 50px;
+    height: 1px;
+    background-color: var(--gray-40);
+}
+
+/* ===== 首页幻影部分 ===== */
+.hero-section {
+    height: 100vh;
+    position: relative;
+    overflow: hidden;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    padding: 0 2rem;
+}
+
+.hero-canvas {
+    position: absolute;
+    width: 100%;
+    height: 100%;
+    pointer-events: none;
+}
+
+.ghost-figure {
+    position: absolute;
+    opacity: var(--ghost-opacity);
+    transition: all 0.5s ease;
+}
+
+.figure-1 {
+    top: 20%;
+    left: 10%;
+    width: 200px;
+    height: 400px;
+}
+
+.figure-2 {
+    top: 40%;
+    right: 15%;
+    width: 150px;
+    height: 300px;
+}
+
+.figure-3 {
+    bottom: 30%;
+    left: 50%;
+    transform: translateX(-50%);
+    width: 180px;
+    height: 350px;
+}
+
+.figure-outline {
+    position: absolute;
+    width: 100%;
+    height: 100%;
+    border: 1px solid var(--black);
+    border-radius: 2px;
+    opacity: 0.3;
+}
+
+.figure-shade {
+    position: absolute;
+    width: 80%;
+    height: 90%;
+    top: 5%;
+    left: 10%;
+    background-color: var(--black);
+    opacity: 0.05;
+    filter: blur(10px);
+}
+
+.figure-text {
+    position: absolute;
+    bottom: -2rem;
+    left: 0;
+    width: 100%;
+    text-align: center;
+    font-size: 0.8rem;
+    color: var(--gray-40);
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+}
+/* 人物幻影图片样式 */
+.ghost-image {
+    position: absolute;
+    width: 100%;
+    height: 100%;
+    top: 0;
+    left: 0;
+    overflow: hidden;
+    z-index: 1;
+}
+
+.fade-image {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    opacity: 0.2; /* 初始透明度 - 若隐若现 */
+    transition: opacity 0.5s ease; /* 平滑过渡效果 */
+    filter: contrast(0.8) brightness(0.7); /* 增强幻影效果 */
+}
+.text-fragment {
+    position: absolute;
+    font-family: 'Crimson Text', serif;
+    font-style: italic;
+    font-size: clamp(1rem, 3vw, 1.5rem);
+    color: var(--gray-30);
+    opacity: 0.3;
+    pointer-events: none;
+    transition: all 0.5s ease;
+}
+
+.frag-1 { top: 15%; left: 5%; }
+.frag-2 { top: 25%; right: 10%; }
+.frag-3 { bottom: 20%; left: 8%; }
+.frag-4 { bottom: 30%; right: 5%; }
+
+.hero-question {
+    position: relative;
+    z-index: 2;
+    text-align: center;
+    margin-bottom: 4rem;
+}
+
+.question-mark {
+    font-family: 'Crimson Text', serif;
+    font-size: clamp(5rem, 15vw, 15rem);
+    font-weight: 600;
+    color: var(--black);
+    opacity: 0.1;
+    margin-bottom: 2rem;
+    line-height: 1;
+}
+
+.question-text {
+    font-family: 'DM Mono', monospace;
+    font-size: clamp(1.2rem, 2.7vw, 1.7rem);
+    color: var(--gray-30);
+}
+
+.type-line {
+    display: block;
+    margin-bottom: 0.5rem;
+    opacity: 0;
+    transform: translateY(10px);
+}
+
+.type-line.animate {
+  animation: typeIn 1s ease-out forwards;
+}
+.type-line:nth-child(1).animate { animation-delay: 0.5s; }
+.type-line:nth-child(2).animate { animation-delay: 1.5s; }
+.type-line:nth-child(3).animate { animation-delay: 2.5s; }
+
+.scroll-hint {
+    position: absolute;
+    bottom: 3rem;
+    left: 50%;
+    transform: translateX(-50%);
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 0.5rem;
+}
+
+.hint-line {
+    width: 1px;
+    height: 60px;
+    background-color: var(--gray-50);
+    animation: linePulse 2s ease-in-out infinite;
+}
+
+.hint-text {
+    font-size: 1rem;
+    letter-spacing: 0.2em;
+    color: var(--gray-40);
+    text-transform: uppercase;
+    text-align: center;
+}
+
+@keyframes typeIn {
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+@keyframes linePulse {
+    0%, 100% { opacity: 0.3; height: 40px; }
+    50% { opacity: 1; height: 60px; }
+}
+
+/* ===== 打字机纸张效果 ===== */
+.typewriter-section {
+    min-height: 100vh;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    padding: 4rem 2rem;
+    position: relative;
+}
+
+.typewriter-paper {
+    position: relative;
+    width: min(800px, 90%);
+    background-color: var(--paper-cream);
+    padding: clamp(2rem, 5vw, 4rem);
+    box-shadow: 
+        0 4px 20px rgba(0, 0, 0, 0.05),
+        inset 0 0 100px rgba(0, 0, 0, 0.02);
+    border: 1px solid rgba(0, 0, 0, 0.1);
+    margin-bottom: 4rem;
+}
+
+.paper-texture {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-image: 
+        radial-gradient(circle at 10% 20%, rgba(0, 0, 0, 0.02) 1px, transparent 1px),
+        radial-gradient(circle at 90% 80%, rgba(0, 0, 0, 0.02) 1px, transparent 1px);
+    background-size: 30px 30px;
+    pointer-events: none;
+}
+
+.paper-content {
+    position: relative;
+    z-index: 1;
+}
+
+.typewriter-line {
+    margin-bottom: 1.5rem;
+    font-family: 'DM Mono', monospace;
+    font-size: clamp(0.9rem, 2vw, 1.1rem);
+    line-height: 1.8;
+    min-height: 1.8em;
+    opacity: 0;
+    transform: translateY(20px);
+    transition: opacity 0.5s ease, transform 0.5s ease;
+}
+
+.typewriter-line.visible {
+    opacity: 1;
+    transform: translateY(0);
+}
+
+.typed-text {
+    display: inline-block;
+}
+
+.cursor {
+    display: inline-block;
+    animation: blink 1s infinite;
+    color: var(--gray-50);
+}
+
+.paper-stain {
+    position: absolute;
+    background-color: var(--paper-stain);
+    border-radius: 50%;
+    opacity: 0.3;
+    pointer-events: none;
+}
+
+.stain-1 {
+    top: 10%;
+    right: 5%;
+    width: 100px;
+    height: 150px;
+    transform: rotate(30deg);
+}
+
+.stain-2 {
+    bottom: 15%;
+    left: 8%;
+    width: 80px;
+    height: 120px;
+    transform: rotate(-15deg);
+}
+
+.paper-fold {
+    position: absolute;
+    top: -10px;
+    right: 30px;
+    width: 60px;
+    height: 60px;
+    background: linear-gradient(135deg, transparent 50%, rgba(0, 0, 0, 0.05) 50%);
+    transform: rotate(45deg);
+}
+
+/* 相机镜头过渡
+.camera-transition {
+    text-align: center;
+    margin-top: 4rem;
+}
+
+.camera-lens {
+    display: inline-block;
+    position: relative;
+}
+
+.lens-ring {
+    width: clamp(200px, 40vw, 400px);
+    height: clamp(200px, 40vw, 400px);
+    border: 2px solid var(--black);
+    border-radius: 50%;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    margin: 0 auto;
+    position: relative;
+    transition: transform 0.1s linear;
+}
+
+.lens-inner {
+    width: 70%;
+    height: 70%;
+    border: 3px solid var(--gray-50);
+    border-radius: 50%;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.aperture {
+    width: 50%;
+    height: 50%;
+    background: radial-gradient(circle, #333 0%, #000 100%);
+    border-radius: 50%;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    box-shadow: 0 0 30px rgba(0, 0, 0, 0.3);
+}
+
+.aperture-text {
+    font-family: monospace;
+    font-size: clamp(0.9rem, 2vw, 1.2rem);
+    color: var(--gray-50);
+    letter-spacing: 2px;
+}
+
+@keyframes blink {
+    0%, 50% { opacity: 1; }
+    51%, 100% { opacity: 0; }
+} */
+/* /黑胶唱片过渡 / */
+.album-transition {
+  text-align: center;
+  margin-top: 4rem;
+  position: relative;
+}
+
+/* 实验介绍 */
+.intro-section {
+    min-height: 100vh;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    padding: 4rem 2rem;
+    position: relative;
+}
+
+.experiment-frame {
+    position: relative;
+    width: min(900px, 90%);
+    padding: clamp(2rem, 4vw, 3rem);
+}
+
+.frame-border {
+    position: absolute;
+    background-color: var(--black);
+}
+
+.frame-border.left {
+    left: 0;
+    top: 2rem;
+    bottom: 2rem;
+    width: 1px;
+}
+
+.frame-border.right {
+    right: 0;
+    top: 2rem;
+    bottom: 2rem;
+    width: 1px;
+}
+
+.frame-border.top {
+    top: 0;
+    left: 2rem;
+    right: 2rem;
+    height: 1px;
+}
+
+.frame-border.bottom {
+    bottom: 0;
+    left: 2rem;
+    right: 2rem;
+    height: 1px;
+}
+
+.experiment-content {
+    padding: 2rem;
+}
+
+.experiment-title {
+    display: flex;
+    align-items: baseline;
+    gap: 1rem;
+    margin-bottom: 3rem;
+    font-family: 'DM Mono', monospace;
+}
+
+.title-number {
+    font-size: 1rem;
+    color: var(--gray-40);
+    letter-spacing: 0.2em;
+}
+
+.title-text {
+    font-size: clamp(1.2rem, 3vw, 1.5rem);
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+}
+
+.experiment-description {
+    margin-bottom: 4rem;
+}
+
+.desc-line {
+    font-family: 'Crimson Text', serif;
+    font-size: clamp(1rem, 2.5vw, 1.2rem);
+    line-height: 1.8;
+    margin-bottom: 0.5rem;
+    color: var(--gray-30);
+}
+
+.tool-icons {
+    display: flex;
+    justify-content: center;
+    gap: clamp(1rem, 3vw, 3rem);
+    margin-bottom: 3rem;
+    flex-wrap: wrap;
+}
+
+.tool-icon {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 0.5rem;
+    cursor: pointer;
+    transition: all 0.3s ease;
+}
+
+.tool-icon:hover {
+    transform: translateY(-5px);
+}
+
+.icon-circle {
+    width: 80px;
+    height: 80px;
+    border: 1px solid var(--black);
+    border-radius: 50%;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    overflow: hidden;
+    background: var(--paper-white);
+}
+
+.icon-img {
+    width: 60%;
+    height: 60%;
+    object-fit: contain;
+    filter: grayscale(100%);
+    opacity: 0.7;
+    transition: all 0.3s ease;
+}
+
+.tool-icon:hover .icon-img {
+    filter: grayscale(0%);
+    opacity: 1;
+}
+
+.icon-label {
+    font-size: 0.8rem;
+    letter-spacing: 0.1em;
+    color: var(--gray-40);
+    text-transform: uppercase;
+}
+
+.experiment-note {
+    display: flex;
+    align-items: flex-start;
+    gap: 1rem;
+    padding: 1.5rem;
+    background-color: rgba(0, 0, 0, 0.02);
+    border-left: 2px solid var(--gray-50);
+}
+
+.note-symbol {
+    font-size: 1.2rem;
+    color: var(--gray-40);
+}
+
+.note-text {
+    font-family: 'Crimson Text', serif;
+    font-style: italic;
+    font-size: clamp(0.8rem, 2vw, 0.9rem);
+    color: var(--gray-40);
+    line-height: 1.6;
+}
+
+/* ===== 游戏测试部分 ===== */
+.game-section {
+    min-height: 100vh;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    padding: 4rem 2rem;
+    background-color: var(--paper-cream);
+}
+
+.test-protocol {
+    width: 100%;
+    max-width: 1000px;
+}
+
+.protocol-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-end;
+    margin-bottom: 3rem;
+    padding-bottom: 1rem;
+    border-bottom: 1px solid var(--gray-70);
+    flex-wrap: wrap;
+    gap: 1rem;
+}
+
+.protocol-title {
+    font-family: 'DM Mono', monospace;
+    font-size: 0.9rem;
+    letter-spacing: 0.2em;
+    text-transform: uppercase;
+    color: var(--gray-40);
+}
+
+.protocol-info {
+    display: flex;
+    gap: 2rem;
+}
+
+.info-item {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-end;
+}
+
+.info-label {
+    font-size: 0.7rem;
+    letter-spacing: 0.1em;
+    color: var(--gray-40);
+    text-transform: uppercase;
+    margin-bottom: 0.3rem;
+}
+
+.info-value {
+    font-family: 'DM Mono', monospace;
+    font-size: 1.5rem;
+    font-weight: 500;
+    color: var(--black);
+}
+
+.test-interface {
+    min-height: 500px;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+}
+
+.test-intro {
+    text-align: center;
+    margin-bottom: 2rem;
+}
+
+.intro-prompt {
+    margin-bottom: 2rem;
+}
+
+.prompt-text {
+    font-family: 'Special Elite', cursive;
+    font-size: clamp(1.5rem, 4vw, 2.5rem);
+    margin-bottom: 0.5rem;
+    letter-spacing: 0.1em;
+}
+
+.prompt-sub {
+    font-family: 'Crimson Text', serif;
+    font-style: italic;
+    font-size: clamp(1.5rem, 3.5vw, 1.7rem);
+    color: var(--gray-40);
+}
+
+/* 图片对比界面 - 3:4竖版图片 */
+.comparison-view {
+    animation: fadeIn 0.5s ease-out;
+}
+
+.comparison-frame {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    gap: clamp(2rem, 4vw, 4rem);
+    margin-bottom: 2rem;
+    flex-wrap: wrap;
+}
+
+.image-slot {
+    flex: 1;
+    min-width: 300px;
+    max-width: 400px;
+    position: relative;
+    transition: all 0.3s ease;
+}
+
+.image-slot:hover {
+    transform: translateY(-5px);
+}
+
+.slot-label {
+    font-family: 'DM Mono', monospace;
+    font-size: 1.1rem;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    color: var(--gray-40);
+    margin-bottom: 0.8rem;
+    text-align: center;
+}
+
+.image-container {
+    position: relative;
+    width: 100%;
+    height: 0;
+    padding-bottom: 133.33%; /* 3:4 aspect ratio (4/3 = 1.3333) */
+    overflow: hidden;
+    border: 1px solid var(--gray-70);
+    background-color: var(--white);
+    cursor: pointer;
+}
+
+.test-image {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    transition: transform 0.5s ease;
+}
+
+.image-container:hover .test-image {
+    transform: scale(1.02);
+}
+
+.image-overlay {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(0, 0, 0, 0.7);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    opacity: 0;
+    transition: opacity 0.3s ease;
+}
+
+.image-container:hover .image-overlay {
+    opacity: 1;
+}
+
+.overlay-text {
+    font-family: 'DM Mono', monospace;
+    font-size: 0.9rem;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    color: var(--white);
+    padding: 1rem 2rem;
+    border: 1px solid var(--white);
+    text-align: center;
+}
+
+.comparison-divider {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 1rem;
+    flex-shrink: 0;
+}
+
+.divider-line {
+    width: 1px;
+    height: 100px;
+    background-color: var(--gray-70);
+}
+
+.divider-text {
+    font-family: 'Special Elite', cursive;
+    font-size: 1.5rem;
+    color: var(--gray-40);
+    padding: 0 1rem;
+}
+
+/* ===== 最终确认界面 ===== */
+.final-confirmation {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100vh;
+    background-color: rgba(248, 245, 240, 0.95);
+    backdrop-filter: blur(10px);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    z-index: 1000;
+    padding: 2rem;
+}
+
+.final-confirm-content {
+    max-width: 600px;
+    width: 100%;
+    text-align: center;
+    background: var(--paper-cream);
+    padding: 4rem;
+    border: 1px solid var(--gray-70);
+    box-shadow: 0 20px 60px rgba(0, 0, 0, 0.1);
+}
+
+.final-question {
+    margin-bottom: 3rem;
+}
+
+.final-question-mark {
+    font-family: 'Crimson Text', serif;
+    font-size: 8rem;
+    color: var(--gray-40);
+    opacity: 0.5;
+    margin-bottom: 1rem;
+    line-height: 1;
+}
+
+.final-question-text {
+    font-family: 'DM Mono', monospace;
+    font-size: 1.5rem;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    margin-bottom: 1rem;
+    color: var(--black);
+}
+
+.final-question-sub {
+    font-family: 'Crimson Text', serif;
+    font-style: italic;
+    font-size: 1.3rem;
+    color: var(--gray-40);
+    line-height: 1.6;
+}
+
+.final-confirm-options {
+    display: flex;
+    flex-direction: column;
+    gap: 1rem;
+}
+
+.final-confirm-btn, .final-review-btn {
+    padding: 1.2rem 2rem;
+    border: 1px solid var(--black);
+    font-family: 'DM Mono', monospace;
+    font-size: 0.9rem;
+    letter-spacing: 0.2em;
+    text-transform: uppercase;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    position: relative;
+    overflow: hidden;
+}
+
+.final-confirm-btn {
+    background-color: var(--black);
+    color: var(--white);
+}
+
+.final-confirm-btn:hover {
+    background-color: var(--gray-20);
+}
+
+.confirm-line {
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    width: 100%;
+    height: 1px;
+    background-color: var(--white);
+    transform: scaleX(0);
+    transform-origin: left;
+    transition: transform 0.3s ease;
+}
+
+.final-confirm-btn:hover .confirm-line {
+    transform: scaleX(1);
+}
+
+.final-review-btn {
+    background-color: transparent;
+    color: var(--black);
+}
+
+.final-review-btn:hover {
+    background-color: rgba(0, 0, 0, 0.05);
+}
+
+/* ===== 雪花屏揭示部分 ===== */
+.reveal-section {
+    min-height: 100vh;
+    position: relative;
+    overflow: hidden;
+    background: linear-gradient(180deg, #0a0a0a 0%, #1a1a1a 100%);
+    color: var(--white);
+}
+
+.snowfall-container {
+    position: relative;
+    width: 100%;
+    height: 100vh;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    overflow: hidden;
+}
+
+.snowflakes {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    pointer-events: none;
+    z-index: 1;
+}
+
+.snowflake {
+    position: absolute;
+    background-color: var(--white);
+    border-radius: 50%;
+    opacity: 0.8;
+    filter: blur(1px);
+}
+
+.reveal-content {
+    position: relative;
+    z-index: 2;
+    text-align: center;
+    max-width: 800px;
+    padding: 2rem;
+}
+
+.wrong-title {
+    font-family: 'Special Elite', cursive;
+    font-size: clamp(5rem, 10vw, 8rem);
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    margin-bottom: -5rem;
+    line-height: 1.2;
+    animation: wrongFlash 1s ease-in-out infinite;
+}
+
+.reveal-message {
+    margin: 4rem 0;
+    max-width: 600px;
+    margin-left: auto;
+    margin-right: auto;
+}
+
+.reveal-message p {
+    font-family: 'Crimson Text', serif;
+    font-size: clamp(1rem, 2vw, 1.2rem);
+    line-height: 1.8;
+    margin-bottom: 1.5rem;
+    color: var(--gray-70);
+    opacity: 0;
+    transform: translateY(20px);
+    transition: all 0.5s ease;
+}
+
+.reveal-message p.visible {
+    opacity: 1;
+    transform: translateY(0);
+}
+
+.deception-btn {
+    position: relative;
+    padding: 1.5rem 3rem;
+    background: transparent;
+    border: 2px solid var(--white);
+    font-family: 'DM Mono', monospace;
+    font-size: 1rem;
+    letter-spacing: 0.2em;
+    text-transform: uppercase;
+    color: var(--white);
+    cursor: pointer;
+    transition: all 0.3s ease;
+    overflow: hidden;
+    margin-top: 2rem;
+}
+
+.deception-btn:hover {
+    background-color: rgba(255, 255, 255, 0.1);
+}
+
+.deception-btn .btn-sketch {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: linear-gradient(
+        45deg,
+        transparent 49%,
+        var(--gray-60) 49%,
+        var(--gray-60) 51%,
+        transparent 51%
+    );
+    opacity: 0;
+    transition: opacity 0.3s ease;
+}
+
+.deception-btn:hover .btn-sketch {
+    opacity: 0.1;
+}
+
+@keyframes wrongFlash {
+    0%, 100% {
+        opacity: 1;
+        transform: scale(1);
+    }
+    50% {
+        opacity: 0.7;
+        transform: scale(1.05);
+    }
+}
+
+/* ===== 分析部分 ===== */
+.analysis-section {
+    padding: 8rem 2rem;
+    background-color: var(--paper-white);
+}
+
+.analysis-header {
+    text-align: center;
+    margin-bottom: 4rem;
+}
+
+.analysis-title {
+    font-family: 'Special Elite', cursive;
+    font-size: clamp(1.8rem, 4vw, 2.5rem);
+    letter-spacing: 0.1em;
+    margin-bottom: 1rem;
+}
+
+.analysis-subtitle {
+    font-family: 'Crimson Text', serif;
+    font-style: italic;
+    font-size: clamp(1rem, 2.5vw, 1.2rem);
+    color: var(--gray-40);
+    max-width: 700px;
+    margin: 0 auto;
+}
+
+.analysis-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+    gap: 2rem;
+    margin-bottom: 4rem;
+}
+
+.analysis-card {
+    background-color: var(--white);
+    border: 1px solid var(--gray-70);
+    padding: 2rem;
+    position: relative;
+    transition: all 0.3s ease;
+    opacity: 0;
+    transform: translateY(20px);
+}
+
+.analysis-card.visible {
+    opacity: 1;
+    transform: translateY(0);
+}
+
+.analysis-card:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.05);
+}
+
+.analysis-image {
+    width: 100%;
+    height: 400px;
+    object-fit: cover;
+    margin-bottom: 1.5rem;
+    filter: grayscale(100%);
+    transition: filter 0.3s ease;
+}
+
+.analysis-card:hover .analysis-image {
+    filter: grayscale(0%);
+}
+
+.analysis-card h4 {
+    font-family: 'DM Mono', monospace;
+    font-size: 1.1rem;
+    font-weight: 500;
+    margin-bottom: 0.5rem;
+    color: var(--black);
+}
+
+.analysis-card p {
+    font-family: 'Crimson Text', serif;
+    font-size: 0.95rem;
+    line-height: 1.6;
+    color: var(--gray-30);
+    margin-bottom: 1rem;
+}
+.analysis-footnote {
+    display: flex;
+    gap: 1rem;
+    padding: 2rem;
+    background-color: rgba(0, 0, 0, 0.02);
+    border-left: 2px solid var(--gray-50);
+    max-width: 800px;
+    margin: 0 auto;
+}
+
+.footnote-symbol {
+    font-family: 'Crimson Text', serif;
+    font-size: 1.5rem;
+    color: var(--gray-40);
+    line-height: 1;
+}
+
+.footnote-text {
+    font-family: 'Crimson Text', serif;
+    font-style: italic;
+    font-size: 0.95rem;
+    line-height: 1.6;
+    color: var(--gray-40);
+}
+
+/* ===== 页脚 ===== */
+.experiment-footer {
+    padding: 4rem 2rem;
+    background-color: var(--gray-10);
+    color: var(--white);
+}
+
+.footer-content {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+    gap: 4rem;
+    margin-bottom: 3rem;
+}
+
+.footer-title {
+    font-family: 'DM Mono', monospace;
+    font-size: 0.9rem;
+    letter-spacing: 0.2em;
+    text-transform: uppercase;
+    color: var(--gray-60);
+    margin-bottom: 1.5rem;
+}
+
+.reference-list {
+    display: flex;
+    flex-direction: column;
+    gap: 1rem;
+}
+
+.reference-item {
+    font-family: 'Crimson Text', serif;
+    font-size: 0.9rem;
+    line-height: 1.6;
+    color: var(--gray-60);
+}
+
+.reference-item em {
+    font-style: italic;
+}
+
+.declaration-content {
+    display: flex;
+    flex-direction: column;
+    gap: 1rem;
+}
+
+.declaration-content p {
+    font-family: 'Crimson Text', serif;
+    font-size: 0.9rem;
+    line-height: 1.6;
+    color: var(--gray-60);
+}
+
+.footer-meta {
+    display: flex;
+    justify-content: center;
+    gap: 3rem;
+    padding-top: 2rem;
+    border-top: 1px solid var(--gray-30);
+    flex-wrap: wrap;
+}
+
+.meta-item {
+    font-family: 'DM Mono', monospace;
+    font-size: 0.8rem;
+    letter-spacing: 0.2em;
+    text-transform: uppercase;
+    color: var(--gray-50);
+}
+
+/* ===== 动画和工具类 ===== */
+@keyframes fadeIn {
+    from {
+        opacity: 0;
+        transform: translateY(20px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+@keyframes bounce {
+    0%, 20%, 50%, 80%, 100% {
+        transform: translateY(0);
+    }
+    40% {
+        transform: translateY(-10px);
+    }
+    60% {
+        transform: translateY(-5px);
+    }
+}
+
+/* 滚动动画 */
+[data-scroll] {
+    opacity: 0;
+    transform: translateY(30px);
+    transition: all 7s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+[data-scroll].visible {
+    opacity: 1;
+    transform: translateY(0);
+}
+
+/* 响应式设计 */
+@media (max-width: 768px) {
+    .section-container {
+        padding: 0 1rem;
+    }
+    
+    .experimental-nav {
+        right: 1rem;
+        top: 1rem;
+    }
+    
+    .nav-label {
+        display: none;
+    }
+    
+    .comparison-frame {
+        flex-direction: column;
+        gap: 1.5rem;
+    }
+    
+    .image-slot {
+        max-width: 100%;
+    }
+    
+    .footer-content {
+        grid-template-columns: 1fr;
+    }
+    
+    .footer-meta {
+        flex-direction: column;
+        align-items: center;
+        gap: 1rem;
+    }
+    
+    .analysis-image {
+        height: 300px;
+    }
+}
+
+@media (max-width: 480px) {
+    .sketch-text {
+        font-size: 2rem;
+        letter-spacing: 0.1em;
+    }
+    
+    .amp {
+        font-size: 2.5rem;
+    }
+    
+    .typewriter-paper {
+        padding: 1.5rem;
+    }
+    
+    .wrong-title {
+        font-size: 2.5rem;
+    }
+}
+/* ===== 极简强抖动 + 1.5倍放大（必生效） ===== */
+.sketch-text .shake-word {
+  font-weight: 700 !important;
+  position: relative !important;
+  /* 核心：只做旋转抖动，幅度大、易感知 */
+  animation: strongShake 2s ease-in-out infinite !important;
+  transition: all 0.3s ease-out !important;
+  text-shadow: 1px 1px 0 #000, -1px -1px 0 #fff !important;
+  display: inline-block !important; /* 必须保留 */
+}
+
+/* 只做旋转抖动（幅度大，肉眼一眼能看到） */
+@keyframes strongShake {
+  0% { transform: rotate(0deg) !important; }
+  25% { transform: rotate(3deg) !important; } /* 向右转3度（明显） */
+  50% { transform: rotate(-3deg) !important; } /* 向左转3度（明显） */
+  75% { transform: rotate(2deg) !important; } /* 向右转2度 */
+  100% { transform: rotate(0deg) !important; }
+}
+
+/* 悬浮放大1.5倍 + 抖动加快 */
+.sketch-text .shake-word:hover {
+  transform: scale(1.5) rotate(0deg) !important; /* 放大时先回正，再抖 */
+  animation: strongShake 0.8s ease-in-out infinite !important; /* 悬浮时抖更快 */
+}
+
+/* 调整or字大小 + 确保不被抖动影响 */
+.sketch-text .amp {
+  animation: none !important;
+  transform: none !important;
+  /* 核心：调小字体（可自行改数值） */
+  font-size: 0.6em !important; /* 相对于REAL/FAKE的60%大小，推荐值 */
+  /* 可选：调整垂直对齐，避免和REAL/FAKE错位 */
+  vertical-align: middle !important;
+  /* 可选：调细一点，更柔和 */
+  font-weight: 400 !important;
+  /* 可选：缩小字间距，更协调 */
+  letter-spacing: 0 !important;
+}
+/* ========== 全局导航栏样式 ========== */
+.global-nav {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  background-color: var(--paper-white);
+  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.05);
+  z-index: 1000;
+}
+
+.global-nav .section-container {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 1rem 2rem;
+}
+
+.nav-logo {
+  font-family: 'Special Elite', cursive;
+  font-size: 1.2rem;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  color: var(--black);
+}
+
+.nav-links {
+  display: flex;
+  list-style: none;
+  gap: 2rem;
+}
+
+.nav-link {
+  font-family: 'DM Mono', monospace;
+  font-size: 0.9rem;
+  letter-spacing: 0.2em;
+  text-transform: uppercase;
+  color: var(--gray-40);
+  text-decoration: none;
+  padding: 0.5rem 1rem;
+  border-radius: 4px;
+  transition: all 0.3s ease;
+}
+
+.nav-link:hover,
+.nav-link.active {
+  color: var(--black);
+  background-color: var(--gray-90);
+}
+
+/* 当前激活的链接高亮 */
+.nav-link.active {
+  font-weight: 500;
+}
+/* =====  移除所有链接的默认蓝色和下划线  ===== */
+a {
+  color: var(--black); /* 使用项目定义的黑色 */
+  text-decoration: none; /* 去掉下划线 */
+}
+
+/* 如果上面的规则没有生效，或者你想更精确地针对特定部分，可以使用下面的规则 */
+
+/* 针对工具图标下方的文字链接 */
+.tool-icon a {
+  color: var(--gray-40); /* 或者 var(--black)，根据你的设计选择 */
+  text-decoration: none;
+}
+
+/* 针对导航栏中的链接 */
+.nav-link {
+  color: var(--gray-40); /* 或者 var(--black) */
+  text-decoration: none;
+}
+
+/* 如果你希望鼠标悬停时也没有变化，可以这样写 */
+.tool-icon a:hover,
+.nav-link:hover {
+  color: var(--black); /* 悬停时变黑，保持一致性 */
+  text-decoration: none;
+}
+/* ===== 修改后的 .typewriter-section 样式 ===== */
+.typewriter-section {
+  min-height: 100vh;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  padding: 4rem 2rem;
+  position: relative;
+}
+
+/* 新增：包裹文本和唱片的容器 */
+.typewriter-container {
+  display: flex;
+  width: 100%;
+  max-width: 1200px;
+  gap: 2rem;
+  /* 让唱片可以浮动在文本旁边 */
+  position: relative;
+}
+
+/* 新增：左侧文本面板的样式 */
+.intro-text-panel {
+  flex: 1;
+  min-width: 0;
+  position: relative;
+  padding: clamp(2rem, 4vw, 3rem);
+  /* 为唱片留出空间 */
+  margin-right: 2rem;
+}
+
+
+
+/* 新增：为左侧内容添加滚动动画的初始状态 */
+.intro-text-panel [data-scroll] {
+  opacity: 0;
+  transform: translateY(30px);
+  transition: all 0.8s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.intro-text-panel [data-scroll].visible {
+  opacity: 1;
+  transform: translateY(0);
+}
+
+/* 新增：响应式设计，小屏幕时调整布局 */
+@media (max-width: 768px) {
+  .typewriter-container {
+    flex-direction: column;
+    gap: 2rem;
+  }
+  .intro-text-panel {
+    margin-right: 0;
+    margin-bottom: 2rem;
+  }
+}
+/* ===== INTRODUCTION + 唱片整合样式 ===== */
+.typewriter-section {
+  min-height: 100vh;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  padding: 4rem 2rem;
+  background-color: var(--paper-cream);
+  position: relative;
+}
+
+.typewriter-container {
+  position: relative;
+  max-width: 1000px;
+  width: 100%;
+  padding: 3rem;
+  border: 1px solid var(--gray-70);
+  background: var(--paper-white);
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.05);
+}
+
+/* 文字区域 */
+.intro-text {
+  position: relative;
+  z-index: 2;
+  max-width: 650px;
+}
+
+.experiment-title {
+  margin-bottom: 2rem;
+}
+
+.title-number {
+  font-family: 'DM Mono', monospace;
+  font-size: 1rem;
+  color: var(--gray-40);
+  letter-spacing: 0.2em;
+  display: block;
+  margin-bottom: 0.5rem;
+}
+
+.title-text {
+  font-family: 'DM Mono', monospace;
+  font-size: clamp(1.8rem, 4vw, 2.4rem);
+  text-transform: uppercase;
+  letter-spacing: 0.1em;
+}
+
+.desc-line {
+  font-family: 'Crimson Text', serif;
+  font-size: clamp(1.2rem, 2.5vw, 1.4rem);
+  line-height: 1.8;
+  margin-bottom: 1rem;
+  color: var(--gray-30); /* 确保颜色是深色 */
+  opacity: 0; /* 初始透明 */
+  transform: translateY(20px);
+  transition: all 0.8s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.desc-line.visible {
+  opacity: 1;
+  transform: translateY(0);
+}
+
+/* 工具图标 */
+.tool-icons {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 1.2rem;
+  margin-top: 2.5rem;
+}
+.tool-icon {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 0.4rem;
+  text-decoration: none;
+  color: var(--gray-40);
+  font-size: 0.8rem;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+}
+.tool-icon img {
+  width: 60px;
+  height: 60px;
+  object-fit: contain;
+  filter: grayscale(100%);
+  opacity: 0.7;
+  transition: all 0.3s ease;
+}
+.tool-icon:hover img {
+  filter: grayscale(0%);
+  opacity: 1;
+}
+
+/* 唱片（嵌入右侧） */
+.album-wrapper {
+  position: absolute;
+  top: 20%;
+  right: -80px; /* 超出容器，形成“贴纸”效果 */
+  width: 220px;
+  height: auto;
+  z-index: 1;
+  box-shadow: 0 10px 20px rgba(0, 0, 0, 0.1);
+  border-radius: 50%;
+  overflow: hidden;
+}
+.album-record {
+  width: 100%;
+  height: auto;
+  display: block;
+  transform: rotate(0deg);
+  transition: transform 0.1s linear;
+}
+
+/* 小屏适配 */
+@media (max-width: 768px) {
+  .typewriter-container {
+    padding: 2rem 1.5rem;
+  }
+  .album-wrapper {
+    position: static;
+    right: auto;
+    margin: 2rem auto 0;
+    width: 180px;
+  }
+  .intro-text {
+    max-width: 100%;
+  }
+}
+/* 新增：唱片容器的样式 */
+.album-record-wrapper {
+  position: absolute;
+  top: 50%;
+  right: 0;
+  transform: translateY(-50%);
+  /* 让唱片看起来像“贴”在纸上 */
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.05);
+  border-radius: 10px;
+  overflow: hidden;
+  /* 控制唱片大小 */
+  width: clamp(300px, 60vw, 600px);
+  height: auto;
+  z-index: 1; /* 确保唱片在文本之上 */
+}
+
+/* 新增：让图标在 4 个后自动换行 */
+.tool-icons {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 1.2rem;
+  justify-content: center;
+  margin-top: 2.5rem;
+}
+
+/* 让每一行的图标都居中对齐 */
+.tool-icon {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 0.4rem;
+  text-decoration: none;
+  color: var(--gray-40);
+  font-size: 0.8rem;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  /* 新增：让每个图标宽度固定，避免大小不一 */
+  width: 120px;
+  min-width: 120px;
+}
+
+.tool-icon img {
+  width: 60px;
+  height: 60px;
+  object-fit: contain;
+  filter: grayscale(100%);
+  opacity: 0.7;
+  transition: all 0.3s ease;
+}
+/* ===== AI 工具图标提示文字 ===== */
+.tool-icons-hint {
+  font-family: 'DM Mono', monospace;
+  font-size: clamp(0.78rem, 0.8vw, 1.1rem);
+  color: var(--gray-40);
+  text-align: center;
+  margin-top: 0.1rem;
+  letter-spacing: 0.1em;
+  opacity: 0.7;
+}
+/* 让提示文字在小屏时也居中显示 */
+@media (max-width: 768px) {
+  .tool-icons-hint {
+    margin-top: 1rem;
+    font-size: 0.9rem;
+  }
+}
+/* ===== 唱片上的音符图标（置于上方图层） ===== */
+.album-wrapper {
+  position: relative; /* 关键：让内部 absolute 元素相对于它定位 */
+  display: inline-block;
+}
+
+.album-note {
+  position: absolute;
+  top: -40px; /* 在唱片上方 40px */
+  left: 50%;
+  transform: translateX(-50%) translateY(20px); /* 初始隐藏：向下偏移 */
+  opacity: 0;
+  width: 96px; /* 你已放大的尺寸 */
+  height: auto;
+  z-index: 10; /* 关键：确保在唱片上方 */
+  transition: all 0.6s cubic-bezier(0.4, 0, 0.2, 1);
+}
+/* ===== 唱片容器 ===== */
+.album-wrapper {
+  position: relative;
+  display: inline-block;
+}
+
+/* ===== 唱片样式 ===== */
+.album-record {
+  width: clamp(300px, 60vw, 600px);
+  height: auto;
+  display: block;
+  transform: rotate(0deg);
+  transition: transform 0.1s linear;
+  background-color: transparent;
+}
+
+/* ===== 音符样式 ===== */
+.album-note {
+  position: absolute;
+  top: -40px;
+  left: 50%;
+  transform: translateX(-50%) translateY(20px);
+  opacity: 0;
+  width: 96px;
+  height: auto;
+  filter: grayscale(100%);
+  opacity: 0.7;
+  z-index: 10;
+  transition: all 0.6s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.album-note.visible {
+  opacity: 1;
+  transform: translateX(-50%) translateY(0);
+}
+/* 调整唱片容器定位避免溢出 */
+.album-wrapper {
+  position: relative; /* 改为相对定位，避免绝对容器容器 */
+  margin: 20rem auto; /* 居中显示 */
+  width: 100%; /* 限制最大宽度，避免超出屏幕 */
+  max-width: 800px; /* 最大定最大尺寸 */
+  height: auto;
+  overflow: visible; /* 确保内容不被裁剪 */
+}
+
+/* 确保唱片完整显示 */
+.album-record {
+  width: 150%; /* 自适应应容器宽度 */
+  height: auto;
+  display: block;
+}
+
+/* 调整音符位置 */
+.album-note {
+  position: absolute;
+  top: 850px; /* 向上移距离减小，避免超出顶部 */
+  left: 40%;
+  transform: translateX(-50%) translateY(0); /* 初始位置就在在可见区域 */
+  width: 500px; /* 适当小音符尺寸 */
+  opacity: 0.8;
+  z-index: 10;
+}
+
+/* 解决父元素溢出隐藏问题 */
+.typewriter-container, .typewriter-section {
+  overflow: visible !important; /* 确保子元素不被裁剪 */
+}
+
+/* 响应响应式适配调整 */
+@media (max-width: 768px) {
+  .album-wrapper {
+    width: 60%; /* 小屏幕上增大显示比例 */
+  }
+  
+  .album-note {
+    width: 40px; /* 小屏幕上进一步小音符 */
+    top: -20px;
+  }
+}
+/* 移除唱片容器的阴影和边框效果 */
+.album-wrapper {
+  /* 移除阴影效果 */
+  box-shadow: none !important;
+  /* 确保没有边框 */
+  border: none !important;
+  /* 若有背景透明相关设置也可清除 */
+  background: transparent !important;
+}
+
+/* 检查唱片外层容器的阴影 */
+.album-record-wrapper {
+  box-shadow: none !important; /* 移除可能的阴影效果 */
+  border: none !important; /* 确保没有边框 */
+}
+
+/* 当音乐播放时，提示文字淡入 */
+.bg-music-playing .music-hint {
+  opacity: 1;
+}
+/* ===== 背景音乐提示文字 ===== */
+.music-hint {
+  position: absolute;
+  Top: 780px; /* 在唱片下方 40px */
+  left: 160%;
+  transform: translateX(-50%);
+  font-family: 'DM Mono', monospace;
+  font-size: clamp(0.5rem, 1.5vw, 0.9rem);
+  color: var(--gray-40);
+  /* text-align: center; */
+  opacity: 0.7;
+  z-index: 10;
+  white-space: nowrap; /* 防止文字换行，保持一行 */
+}
+/* 游戏开始过渡界面样式 */
+.game-intro-section {
+    position: relative;
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    overflow: hidden;
+}
+
+.game-intro-bg {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    z-index: 1;
+}
+
+.bg-layer {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+}
+
+.bg2 {
+    z-index: 1;
+}
+
+.bg3 {
+    z-index: 2;
+    opacity: 0; /* 初始透明度为0 */
+    transition: opacity 2s ease-in-out; /* 2秒过渡效果 */
+}
+
+.game-intro-text {
+    position: relative;
+    z-index: 3;
+    text-align: center;
+    margin-bottom: 4rem;
+    color: var(--white);
+    text-shadow: 0 2px 4px rgba(0,0,0,0.3);
+}
+
+.intro-line {
+    font-family: 'DM Mono', monospace;
+    font-size: clamp(1.2rem, 3vw, 1.8rem);
+    margin-bottom: 1rem;
+}
+
+.second-line {
+    opacity: 0;
+}
+
+.start-button-container {
+    position: relative;
+    z-index: 3;
+    text-align: center;
+    cursor: pointer;
+    transition: transform 0.3s ease;
+}
+
+.start-button-container:hover {
+    transform: scale(1.05);
+}
+
+.start-button {
+    width: clamp(120px, 20vw, 200px);
+    height: auto;
+    margin-bottom: 1rem;
+    filter: drop-shadow(0 4px 6px rgba(0,0,0,0.2));
+}
+
+.start-text {
+    font-family: 'Special Elite', cursive;
+    font-size: clamp(1rem, 2vw, 1.2rem);
+    color: var(--white);
+    text-shadow: 0 2px 4px rgba(0,0,0,0.3);
+}
+/* 电视雪花屏核心样式 */
+.tv-snow {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  overflow: hidden;
+  background: #000;
+}
+
+/* 噪点纹理 - 使用CSS渐变生成颗粒感 */
+.noise {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  opacity: 0.8;
+  background-image: 
+    radial-gradient(circle at 1px 1px, rgba(255,255,255,0.15) 1px, transparent 0),
+    radial-gradient(circle at 2px 2px, rgba(255,255,255,0.1) 1px, transparent 0);
+  background-size: 3px 3px;
+  animation: noise-flicker 0.1s infinite;
+}
+
+/* 扫描线效果 */
+.scanlines {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: linear-gradient(
+    to bottom,
+    transparent 50%,
+    rgba(0,0,0,0.1) 51%,
+    transparent 51%
+  );
+  background-size: 100% 4px;
+  animation: scanline 2s linear infinite;
+}
+
+/* 随机紫线 */
+.purple-lines {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  pointer-events: none;
+}
+
+.purple-line {
+  position: absolute;
+  width: 1px;
+  height: 100%;
+  background: rgba(128, 0, 128, 0.6);
+  animation: purple-flicker 3s infinite;
+}
+
+/* 无信号文字 */
+.no-signal {
+  position: absolute;
+  top: 76%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  font-family: 'Special Elite', monospace;
+  font-size: clamp(1rem, 4vw, 2rem);
+  color: rgba(0, 217, 255, 0.15);
+  letter-spacing: 0.2em;
+  text-transform: uppercase;
+  opacity: 0.8;
+  animation: signal-pulse 3s infinite alternate;
+  text-shadow: 0 0 5px rgba(255,255,255,0.5);
+}
+
+/* 动画关键帧 */
+@keyframes noise-flicker {
+  0%, 100% { opacity: 0.7; }
+  50% { opacity: 0.85; }
+}
+
+@keyframes scanline {
+  0% { transform: translateY(-100%); }
+  100% { transform: translateY(100%); }
+}
+
+@keyframes signal-pulse {
+  0% { opacity: 0.5; transform: translate(-50%, -50%) scale(0.95); }
+  100% { opacity: 0.9; transform: translate(-50%, -50%) scale(1.05); }
+}
+
+@keyframes purple-flicker {
+  0%, 100% { opacity: 0; }
+  20% { opacity: 0.6; }
+  30% { opacity: 0; }
+  70% { opacity: 0.4; }
+  80% { opacity: 0; }
+}
+/* 扫描线容器 - 可嵌套在雪花屏或需要扫描效果的区域 */
+.scanline-container {
+  position: relative;
+  width: 100%;
+  height: 100%; /* 继承父元素高度 */
+  overflow: hidden;
+}
+
+/* 基础扫描线样式 */
+.scanline {
+  position: absolute;
+  width: 100%;
+  height: 30px; /* 扫描线粗细 */
+  background: rgba(255, 56, 126, 0.9); /* 基础半透明白色 */
+  animation: scanFade 2s linear infinite;
+  transform-origin: left center;
+}
+
+/* 多条扫描线叠加 - 使用伪元素创建额外线条 */
+.scanline::before,
+.scanline::after {
+  content: '';
+  position: absolute;
+  width: 100%;
+  height: 150%;
+  background: inherit;
+  animation: scanFade 4s linear infinite;
+}
+
+/* 扫描线参数差异化 - 避免同步运动 */
+.scanline {
+  animation-delay: 0s;
+  background: rgba(255, 255, 255, 0.25); /* 主线条稍亮 */
+}
+
+.scanline::before {
+  animation-delay: 0.6s; /* 延迟错开 */
+  background: rgba(255, 241, 0, 0.9); /* 偏蓝紫色调 */
+  height: 1px; /* 更细的线条 */
+}
+
+.scanline::after {
+  animation-delay: 1.2s; /* 更大延迟 */
+  background: rgba(255, 200, 255, 0.1); /* 偏粉色调 */
+  height: 3px; /* 稍粗的线条 */
+}
+
+/* 斜向扫描线变体 (可选) */
+.scanline.angled {
+  transform: rotate(0.5deg);
+  width: 120%; /* 旋转后避免边缘空白 */
+  left: -10%;
+}
+
+/* 核心动画：移动+渐变消失 */
+@keyframes scanFade {
+  0% {
+    transform: translateY(-100%);
+    opacity: 0; /* 初始透明 */
+  }
+  20% {
+    opacity: 0.3; /* 进入视野时渐显 */
+  }
+  70% {
+    opacity: 0.3; /* 中间阶段保持可见 */
+  }
+  100% {
+    transform: translateY(100vh); /* 移出视野 */
+    opacity: 0; /* 离开时渐隐 */
+  }
+}
+
+/* 应用示例：电视雪花屏容器整合 */
+.tv-snow {
+  position: relative;
+  width: 100%;
+  height: 100vh;
+  background: #000;
+}
+
+/* 配合噪点使用 (可选) */
+.tv-snow::before {
+  content: '';
+  position: absolute;
+  width: 100%;
+  height: 100%;
+  background-image: 
+    radial-gradient(circle at 2px 2px, rgba(255,255,255,0.1) 2px, transparent 0),
+    radial-gradient(circle at 4px 4px, rgba(255,255,255,0.05) 2px, transparent 0);
+  background-size: 4px 4px;
+  pointer-events: none;
+}
+/* 在style.css中添加样式 */
+.analysis-section {
+    position: relative; /* 确保相对定位，使子元素绝对定位有效 */
+    padding: 8rem 2rem 12rem; /* 增加底部内边距，避免图片被截断 */
+}
+
+.analysis-hedgehog {
+    position: absolute;
+    bottom: 70rem; /* 距离底部的距离 */
+    right: 12rem; /* 距离右侧的距离 */
+    z-index: 10; /* 确保显示在内容上方 */
+    max-width: 170px; /* 控制图片最大宽度 */
+    opacity: 0.8; /* 轻微透明效果 */
+    transition: transform 0.3s ease; /* 悬停动画 */
+}
+
+.analysis-hedgehog:hover {
+    transform: scale(1.05) rotate(2deg); /* 悬停时轻微放大和旋转 */
+}
+
+.hedgehog-img {
+    width: 100%;
+    height: auto;
+    filter: drop-shadow(0 4px 6px rgba(0,0,0,0.1)); /* 增加轻微阴影 */
+}
+
+/* 响应式调整 */
+@media (max-width: 768px) {
+    .analysis-hedgehog {
+        max-width: 100px;
+        bottom: 2rem;
+        right: 2rem;
+    }
+}
+/* 在style.css中添加新样式 */
+.analysis-note {
+    position: absolute;
+    bottom: 70.5rem; /* 位于刺猬图片上方 */
+    right: 65rem; /* 稍左于刺猬图片 */
+    z-index: 10;
+    max-width: 250px; /* 比刺猬图片稍小 */
+    opacity: 0.9;
+    transition: transform 0.3s ease;
+}
+
+.note-img {
+    width: 100%;
+    height: auto;
+    filter: drop-shadow(0 4px 6px rgba(0,0,0,0.15));
+}
+
+.analysis-note:hover {
+    transform: scale(1.1) rotate(-3deg); /* 不同的旋转方向增加变化感 */
+}
+
+/* 响应式调整 */
+@media (max-width: 768px) {
+    .analysis-note {
+        max-width: 80px;
+        bottom: 8rem;
+        right: 4rem;
+    }
+}
+/* 修改卡片布局为唱片架样式 */
+.analysis-grid {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  gap: -2rem; /* 卡片重叠效果 */
+  margin: 6rem 0;
+  padding: 2rem 0;
+  perspective: 1000px; /* 3D 效果 */
+  overflow-x: auto; /* 允许横向滚动 */
+  scrollbar-width: none; /* 隐藏滚动条 */
+}
+
+.analysis-grid::-webkit-scrollbar {
+  display: none; /* 隐藏滚动条 */
+}
+
+.analysis-card {
+  min-width: 280px;
+  transform-origin: center left;
+  transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+  position: relative;
+  z-index: 1;
+}
+
+/* 为每个卡片设置不同的倾斜角度，模拟唱片架效果 */
+.analysis-card:nth-child(1) { transform: rotate(-12deg) translateZ(0); }
+.analysis-card:nth-child(2) { transform: rotate(-6deg) translateZ(0); }
+.analysis-card:nth-child(3) { transform: rotate(0deg) translateZ(0); }
+.analysis-card:nth-child(4) { transform: rotate(6deg) translateZ(0); }
+.analysis-card:nth-child(5) { transform: rotate(12deg) translateZ(0); }
+
+/* 悬停效果 */
+.analysis-card:hover {
+  transform: rotate(0deg) translateZ(30px) scale(1.05);
+  z-index: 10;
+}
+
+/* 音符提示文字样式 */
+.analysis-note-container {
+  position: absolute;
+  bottom: 60rem;
+  right: 15rem;
+  z-index: 10;
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+  cursor: pointer;
+}
+
+.analysis-note-text {
+  font-family: 'DM Mono', monospace;
+  font-size: clamp(0.8rem, 1.5vw, 1rem);
+  color: var(--gray-30);
+  white-space: nowrap;
+  opacity: 0.8;
+  transition: all 0.3s ease;
+}
+
+.analysis-note:hover .analysis-note-text {
+  opacity: 1;
+  transform: translateX(-5px);
+}
+
+/* 响应式调整 */
+@media (max-width: 1024px) {
+  .analysis-note-container {
+    bottom: 30rem;
+    right: 5rem;
+  }
+}
+
+@media (max-width: 768px) {
+  .analysis-note-container {
+    bottom: 8rem;
+    right: 4rem;
+    flex-direction: column;
+    gap: 0.5rem;
+  }
+  
+  .analysis-note-text {
+    font-size: 0.7rem;
+    transform: rotate(-90deg);
+  }
+}
+/* 修改分析部分卡片布局为横向滚动 */
+.analysis-grid {
+  /* 移除原有唱片架样式的重叠和旋转效果 */
+  display: flex;
+  gap: 2rem; /* 卡片之间保留适当间距 */
+  padding: 2rem 0;
+  overflow-x: auto; /* 允许横向滚动 */
+  scrollbar-width: thin; /* 显示细滚动条 */
+  scrollbar-color: var(--gray-40) transparent;
+  justify-content: flex-start; /* 从左侧开始排列 */
+  align-items: stretch; /* 卡片高度一致 */
+  perspective: none; /* 移除3D效果 */
+  margin: 4rem 0;
+}
+
+/* 显示滚动条但美化它 */
+.analysis-grid::-webkit-scrollbar {
+  height: 6px;
+}
+
+.analysis-grid::-webkit-scrollbar-track {
+  background: transparent;
+}
+
+.analysis-grid::-webkit-scrollbar-thumb {
+  background-color: var(--gray-40);
+  border-radius: 3px;
+}
+
+/* 重置卡片样式，确保完整显示 */
+.analysis-card {
+  min-width: 300px; /* 固定最小宽度 */
+  max-width: 350px; /* 固定最大宽度 */
+  flex: 0 0 auto; /* 不伸缩 */
+  transform: none; /* 移除所有旋转效果 */
+  margin: 0; /* 移除可能的外边距 */
+  z-index: 1; /* 统一层级 */
+}
+
+/* 移除卡片的旋转效果 */
+.analysis-card:nth-child(n) {
+  transform: none;
+}
+
+/* 悬停效果调整 */
+.analysis-card:hover {
+  transform: translateY(-5px); /* 只保留上下浮动效果 */
+  z-index: 10;
+}
+
+
+
+/* 响应式调整 */
+@media (max-width: 768px) {
+  .analysis-grid {
+    padding: 1rem;
+    gap: 1.5rem;
+  }
+  
+  .analysis-card {
+    min-width: 250px;
+  }
+}
+/* 探索部分样式 */
+.exploration-section {
+    padding: 6rem 2rem;
+    background-color: var(--gray-5);
+}
+
+.exploration-header {
+    text-align: center;
+    margin-bottom: 4rem;
+}
+
+.exploration-title {
+    font-family: 'Special Elite', cursive;
+    font-size: clamp(4rem, 10vw, 7rem);
+    color: var(--black);
+    margin-bottom: 1rem;
+}
+
+.exploration-subtitle {
+    font-family: 'Crimson Text', serif;
+    font-size: clamp(2rem, 4vw, 2.4rem);
+    color: var(--gray-40);
+    max-width: 800px;
+    margin: 0 auto;
+}
+
+.exploration-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+    gap: 3rem;
+    max-width: 1200px;
+    margin: 0 auto;
+}
+
+.video-card {
+    text-decoration: none;
+    color: inherit;
+    transition: transform 0.3s ease;
+}
+
+.video-card:hover {
+    transform: translateY(-5px);
+}
+
+.video-thumbnail {
+    position: relative;
+    width: 100%;
+    height: 200px;
+    overflow: hidden;
+    margin-bottom: 1rem;
+    border-radius: 4px;
+    box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+}
+
+.video-image {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    transition: filter 0.3s ease;
+}
+
+.video-card:hover .video-image {
+    filter: brightness(0.8);
+}
+
+.play-icon {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    width: 60px;
+    height: 60px;
+    background-color: rgba(255,255,255,0.9);
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 1.5rem;
+    color: var(--black);
+    opacity: 0;
+    transition: all 0.3s ease;
+}
+
+.video-card:hover .play-icon {
+    opacity: 1;
+    transform: translate(-50%, -50%) scale(1.1);
+}
+
+.video-title {
+    font-family: 'DM Mono', monospace;
+    font-size: 1.3rem;
+    color: var(--black);
+    line-height: 1.4;
+}
